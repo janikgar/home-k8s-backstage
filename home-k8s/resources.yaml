@@ -8,6 +8,7 @@ metadata:
 spec:
   type: storage
   owner: group:storage-admin
+  system: synology
 ---
 apiVersion: backstage.io/v1alpha1
 kind: Resource
@@ -18,3 +19,15 @@ metadata:
 spec:
   type: cluster
   owner: group:k8s-admin
+  system: k3s
+---
+apiVersion: backstage.io/v1alpha1
+kind: Resource
+metadata:
+  name: router
+  title: Router
+  description: Router
+spec:
+  type: cluster
+  owner: group:network-admin
+  system: synology

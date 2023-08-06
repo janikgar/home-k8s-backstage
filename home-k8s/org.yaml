@@ -2,7 +2,7 @@
 apiVersion: backstage.io/v1alpha1
 kind: User
 metadata:
-  name: admin
+  name: systems-admin
 spec:
   memberOf:
     - db-admin

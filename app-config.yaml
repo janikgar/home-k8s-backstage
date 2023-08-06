@@ -81,7 +81,7 @@ catalog:
     entityFilename: catalog-info.yaml
     pullRequestBranchName: backstage-integration
   rules:
-    - allow: [Component, System, API, Resource, Location]
+    - allow: [Component, System, API, Resource, Location, User, Group]
   locations:
     - type: file
       target: ../../home-k8s/resources.yaml
@@ -89,17 +89,33 @@ catalog:
       target: ../../home-k8s/org.yaml
     - type: file
       target: ../../home-k8s/components.yaml
+    - type: file
+      target: ../../home-k8s/systems.yaml
+
 kubernetes:
   serviceLocatorMethod:
     type: multiTenant
   clusterLocatorMethods:
     - type: config
       clusters:
-        - url: http://192.168.1.101:6443
+        - url: https://192.168.1.101:6443
           name: home-k8s
           authProvider: serviceAccount
           serviceAccountToken: ${K8S_TOKEN}
+          caFile: ../../home-k8s/k8s_ca.pem
           customResources:
-            - group: 'argoproj.io'
+            - group: 'monitoring.coreos.com'
               apiVersion: 'v1'
-              plural: 'applications'
+              plural: 'prometheuses'
+            - group: 'monitoring.coreos.com'
+              apiVersion: 'v1'
+              plural: 'podmonitors'
+            - group: 'monitoring.coreos.com'
+              apiVersion: 'v1'
+              plural: 'probes'
+            - group: 'monitoring.coreos.com'
+              apiVersion: 'v1'
+              plural: 'prometheusrules'
+            - group: 'monitoring.coreos.com'
+              apiVersion: 'v1'
+              plural: 'servicemonitors'
