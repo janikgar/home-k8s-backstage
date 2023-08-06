@@ -7,10 +7,10 @@ metadata:
   description: S3-compatible object storage
 spec:
   type: service
-  owner: group:storage-admin
+  owner: group:default/storage-admin
   lifecycle: production
   dependsOn:
-    - resource:nas
+    - resource:default/nas
 ---
 apiVersion: backstage.io/v1alpha1
 kind: Component
@@ -25,11 +25,11 @@ metadata:
     backstage.io/kubernetes-label-selector: app.kubernetes.io/instance=postgresql15
 spec:
   type: service
-  owner: group:db-admin
+  owner: group:default/db-admin
   lifecycle: production
   dependsOn:
-    - resource:nas
-    - component:minio
+    - resource:default/nas
+    - component:default/minio
 ---
 apiVersion: backstage.io/v1alpha1
 kind: Component
@@ -44,11 +44,11 @@ metadata:
     backstage.io/kubernetes-label-selector: app=consul
 spec:
   type: service
-  owner: group:k8s-admin
+  owner: group:default/k8s-admin
   lifecycle: production
   dependsOn:
-    - resource:nas
-    - component:minio
+    - resource:default/nas
+    - component:default/minio
 ---
 apiVersion: backstage.io/v1alpha1
 kind: Component
@@ -63,7 +63,7 @@ metadata:
     backstage.io/kubernetes-label-selector: app.kubernetes.io/name=vault
 spec:
   type: service
-  owner: group:k8s-admin
+  owner: group:default/k8s-admin
   lifecycle: production
   dependsOn:
-    - component:consul
+    - component:consul/consul
