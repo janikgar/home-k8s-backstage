@@ -112,4 +112,13 @@ kubernetes:
   serviceLocatorMethod:
     type: multiTenant
   clusterLocatorMethods:
-    - type: localKubectlProxy
+    - type: config
+      clusters:
+        - url: http://192.168.1.101:6443
+          name: home-k8s
+          authProvider: serviceAccount
+          serviceAccountToken: ${K8S_TOKEN}
+          customResources:
+            - group: 'argoproj.io'
+              apiVersion: 'v1'
+              plural: 'applications'
