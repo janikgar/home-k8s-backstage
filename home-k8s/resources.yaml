@@ -1,0 +1,20 @@
+---
+apiVersion: backstage.io/v1alpha1
+kind: Resource
+metadata:
+  name: nas
+  title: NAS
+  description: Network-attached storage
+spec:
+  type: storage
+  owner: group:storage-admin
+---
+apiVersion: backstage.io/v1alpha1
+kind: Resource
+metadata:
+  name: k3s
+  title: K3s
+  description: K3s Kubernetes cluster
+spec:
+  type: cluster
+  owner: group:k8s-admin

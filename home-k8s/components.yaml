@@ -1,0 +1,63 @@
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: minio
+  title: Minio
+  description: S3-compatible object storage
+spec:
+  type: service
+  owner: group:storage-admin
+  lifecycle: production
+  dependsOn:
+    - resource:nas
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: postgresql
+  title: PostgreSQL
+  namespace: postgresql15
+  description: Core PostgreSQL database
+  annotations:
+    argocd/app-name: postgresql15
+spec:
+  type: service
+  owner: group:db-admin
+  lifecycle: production
+  dependsOn:
+    - resource:nas
+    - component:minio
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: consul
+  title: Consul
+  namespace: consul
+  description: Distributed data store
+  annotations:
+    argocd/app-name: consul
+spec:
+  type: service
+  owner: group:k8s-admin
+  lifecycle: production
+  dependsOn:
+    - resource:nas
+    - component:minio
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: vault
+  title: Vault
+  namespace: vault
+  description: Secure secret store and PKI
+  annotations:
+    argocd/app-name: vault
+spec:
+  type: service
+  owner: group:k8s-admin
+  lifecycle: production
+  dependsOn:
+    - component:consul

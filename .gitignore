@@ -30,6 +30,7 @@ node_modules/
 # dotenv environment variables file
 .env
 .env.test
+.env.ps1
 
 # Build output
 dist
