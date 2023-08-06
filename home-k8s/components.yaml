@@ -21,6 +21,8 @@ metadata:
   description: Core PostgreSQL database
   annotations:
     argocd/app-name: postgresql15
+    backstage.io/kubernetes-namespace: postgresql15
+    backstage.io/kubernetes-label-selector: app.kubernetes.io/instance=postgresql15
 spec:
   type: service
   owner: group:db-admin
@@ -38,6 +40,8 @@ metadata:
   description: Distributed data store
   annotations:
     argocd/app-name: consul
+    backstage.io/kubernetes-namespace: consul
+    backstage.io/kubernetes-label-selector: app=consul
 spec:
   type: service
   owner: group:k8s-admin
@@ -55,6 +59,8 @@ metadata:
   description: Secure secret store and PKI
   annotations:
     argocd/app-name: vault
+    backstage.io/kubernetes-namespace: vault
+    backstage.io/kubernetes-label-selector: app.kubernetes.io/name=vault
 spec:
   type: service
   owner: group:k8s-admin
