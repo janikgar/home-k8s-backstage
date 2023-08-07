@@ -5,6 +5,10 @@ metadata:
   name: minio
   title: Minio
   description: S3-compatible object storage
+  links:
+    - title: Minio
+      url: https://minio.home.lan
+      icon: dashboard
 spec:
   type: service
   system: default/synology
@@ -54,6 +58,10 @@ metadata:
   title: Consul
   namespace: consul
   description: Distributed data store
+  links:
+    - url: https://consul.home.lan
+      title: Consul
+      icon: dashboard
   annotations:
     argocd/app-name: consul
     backstage.io/kubernetes-namespace: consul
@@ -74,6 +82,10 @@ metadata:
   title: Vault
   namespace: vault
   description: Secure secret store and PKI
+  links:
+    - url: https://vault.home.lan
+      title: Vault
+      icon: dashboard
   annotations:
     argocd/app-name: vault
     backstage.io/kubernetes-namespace: vault
@@ -93,6 +105,10 @@ metadata:
   title: Authentik
   namespace: authentik
   description: Single-Sign On Provider
+  links:
+    - url: https://authentik.home.lan
+      title: Authentik
+      icon: dashboard
   annotations:
     argocd/app-name: authentik
     backstage.io/kubernetes-namespace: authentik
@@ -114,6 +130,10 @@ metadata:
   title: N8N
   namespace: n8n
   description: Low-code automation
+  links:
+    - url: https://n8n.home.lan
+      title: N8n
+      icon: dashboard
   annotations:
     argocd/app-name: n8n
     backstage.io/kubernetes-namespace: n8n
@@ -124,7 +144,7 @@ spec:
   owner: group:default/k8s-admin
   lifecycle: production
   dependsOn:
-    - component:postgresql/postgresql
+    - component:postgresql15/postgresql
     - component:vault/vault
 ---
 apiVersion: backstage.io/v1alpha1
@@ -153,6 +173,13 @@ metadata:
   title: Prometheus Operator
   namespace: prometheus
   description: Time-scale database for metrics
+  links:
+    - url: https://prom.home.lan
+      title: Prometheus
+      icon: dashboard
+    - url: https://alertmanager.home.lan
+      title: Alert Manager
+      icon: dashboard
   annotations:
     argocd/app-name: prometheus-operator
     backstage.io/kubernetes-namespace: prometheus
@@ -191,10 +218,15 @@ metadata:
   title: Ansible Semaphore
   namespace: semaphore
   description: Ansible job runner and scheduler
+  links:
+    - url: https://ansible.home.lan
+      title: Ansible Semaphore
+      icon: dashboard
   annotations:
     argocd/app-name: semaphore
     backstage.io/kubernetes-namespace: semaphore
     backstage.io/kubernetes-label-selector: app.kubernetes.io/instance=semaphore
+    # grafana/alert-label-selector: 
 spec:
   type: service
   system: default/k3s
@@ -211,6 +243,10 @@ metadata:
   title: Harbor
   namespace: harbor
   description: Container image management
+  links:
+    - url: https://harbor.home.lan
+      title: Harbor
+      icon: dashboard
   annotations:
     argocd/app-name: harbor
     backstage.io/kubernetes-namespace: harbor
