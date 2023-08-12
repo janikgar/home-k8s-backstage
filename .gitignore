@@ -52,3 +52,4 @@ site
 *.session.sql
 
 k8s_ca.pem
+ca.crt

@@ -2,10 +2,10 @@ import React from 'react';
 import { Button, Grid } from '@material-ui/core';
 import {
   EntityApiDefinitionCard,
-  EntityConsumedApisCard,
+  // EntityConsumedApisCard,
   EntityConsumingComponentsCard,
   EntityHasApisCard,
-  EntityProvidedApisCard,
+  // EntityProvidedApisCard,
   EntityProvidingComponentsCard,
 } from '@backstage/plugin-api-docs';
 import {
@@ -60,7 +60,7 @@ import { ReportIssue } from '@backstage/plugin-techdocs-module-addons-contrib';
 
 import { EntityKubernetesContent } from '@backstage/plugin-kubernetes';
 import { EntityArgoCDOverviewCard, isArgocdAvailable } from '@roadiehq/backstage-plugin-argo-cd';
-import { EntityGrafanaAlertsCard, isAlertSelectorAvailable, EntityGrafanaDashboardsCard, isDashboardSelectorAvailable } from '@k-phoen/backstage-plugin-grafana';
+import { EntityGrafanaAlertsCard, isAlertSelectorAvailable, EntityGrafanaDashboardsCard } from '@k-phoen/backstage-plugin-grafana';
 
 const techdocsContent = (
   <EntityTechdocsContent>

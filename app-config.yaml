@@ -73,8 +73,16 @@ techdocs:
     type: 'local' # Alternatives - 'googleGcs' or 'awsS3'. Read documentation for using alternatives.
 
 auth:
-  # see https://backstage.io/docs/auth/ to learn about auth providers
-  providers: {}
+  environment: development
+  session:
+    secret: ${SESSION_SECRET}
+  providers:
+    authentik-provider:
+      development:
+        metadataUrl: https://authentik.home.lan/application/o/backstage/.well-known/openid-configuration
+        clientId: ${AUTHENTIK_CLIENT_ID}
+        clientSecret: ${AUTHENTIK_CLIENT_SECRET}
+
 
 scaffolder:
   # see https://backstage.io/docs/features/software-templates/configuration for software template options
