@@ -14,6 +14,8 @@ metadata:
   name: k3s
   title: K3s
   description: K3s Lightweight Kubernetes
+  annotations:
+    backstage.io/source-location: url:https://github.com/janikgar/ansible-local
 spec:
   owner: group:k8s-admin
 ---

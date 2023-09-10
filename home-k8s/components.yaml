@@ -113,6 +113,7 @@ metadata:
     argocd/app-name: authentik
     backstage.io/kubernetes-namespace: authentik
     backstage.io/kubernetes-label-selector: app.kubernetes.io/name=authentik
+    backstage.io/techdocs-ref: dir:./authentik
 spec:
   type: service
   system: default/k3s
@@ -138,6 +139,7 @@ metadata:
     argocd/app-name: n8n
     backstage.io/kubernetes-namespace: n8n
     backstage.io/kubernetes-label-selector: app.kubernetes.io/name=n8n
+    vault.io/secrets-path: n8n
 spec:
   type: service
   system: default/k3s
@@ -226,6 +228,7 @@ metadata:
     argocd/app-name: semaphore
     backstage.io/kubernetes-namespace: semaphore
     backstage.io/kubernetes-label-selector: app.kubernetes.io/instance=semaphore
+    vault.io/secrets-path: semaphore
     # grafana/alert-label-selector: 
 spec:
   type: service
@@ -251,6 +254,7 @@ metadata:
     argocd/app-name: harbor
     backstage.io/kubernetes-namespace: harbor
     backstage.io/kubernetes-label-selector: app.kubernetes.io/instance=harbor
+    vault.io/secrets-path: harbor
 spec:
   type: service
   system: default/k3s
