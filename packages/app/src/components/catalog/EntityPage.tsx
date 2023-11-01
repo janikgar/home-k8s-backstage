@@ -60,7 +60,7 @@ import { ReportIssue } from '@backstage/plugin-techdocs-module-addons-contrib';
 
 import { EntityKubernetesContent } from '@backstage/plugin-kubernetes';
 import { EntityArgoCDOverviewCard, isArgocdAvailable } from '@roadiehq/backstage-plugin-argo-cd';
-import { EntityGrafanaAlertsCard, isAlertSelectorAvailable, EntityGrafanaDashboardsCard } from '@k-phoen/backstage-plugin-grafana';
+// import { EntityGrafanaAlertsCard, isAlertSelectorAvailable, EntityGrafanaDashboardsCard } from '@k-phoen/backstage-plugin-grafana';
 
 const techdocsContent = (
   <EntityTechdocsContent>
@@ -148,7 +148,7 @@ const overviewContent = (
         </Grid>
       </EntitySwitch.Case>
     </EntitySwitch>
-    <EntitySwitch>
+    {/* <EntitySwitch>
       <EntitySwitch.Case if={e => Boolean(isAlertSelectorAvailable(e))}>
         <Grid item md={8} xs={12}>
           <EntityGrafanaAlertsCard />
@@ -161,7 +161,7 @@ const overviewContent = (
           <EntityGrafanaDashboardsCard />
         </Grid>
       </EntitySwitch.Case>
-    </EntitySwitch>
+    </EntitySwitch> */}
   </Grid>
 );
 
