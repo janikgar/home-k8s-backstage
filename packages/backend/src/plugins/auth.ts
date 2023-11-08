@@ -6,6 +6,11 @@ import {
 import { Router } from 'express';
 import { PluginEnvironment } from '../types';
 import { stringifyEntityRef, DEFAULT_NAMESPACE } from '@backstage/catalog-model';
+import { custom } from 'openid-client';
+
+custom.setHttpOptionsDefaults({
+  timeout: 7500,
+});
 
 export default async function createPlugin(
   env: PluginEnvironment,
