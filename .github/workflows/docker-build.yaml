@@ -37,4 +37,4 @@ jobs:
         context: .
         platforms: linux/arm64
         file: packages/backend/Dockerfile
-        tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:$(date '+%Y.%m.%d')
+        tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:$(date +%Y.%m.%d)
