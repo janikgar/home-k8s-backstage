@@ -30,6 +30,8 @@ jobs:
     #   uses: docker/metadata-action@v5
     #   with:
     #     images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+    - name: Set Tag
+      run: echo "IMAGE_DATE=$(date '+%Y.%m.%d')" >> "$GITHUB_ENV"
     - name: Build
       uses: docker/build-push-action@v5
       with:
@@ -37,4 +39,4 @@ jobs:
         context: .
         platforms: linux/arm64
         file: packages/backend/Dockerfile
-        tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:$(date +%Y.%m.%d)
+        tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_DATE }}
