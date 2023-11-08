@@ -5,6 +5,8 @@ on:
     branches: [ $default-branch ]
   pull_request:
     branches: [ $default-branch ]
+  workflow_dispatch:
+    inputs: {}
 
 env:
   # Use docker.io for Docker Hub if empty
