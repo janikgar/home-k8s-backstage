@@ -53,3 +53,12 @@ site
 
 k8s_ca.pem
 ca.crt
+
+# Yarn 3 files
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
