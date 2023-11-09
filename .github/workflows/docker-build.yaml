@@ -73,7 +73,7 @@ jobs:
     - name: Build
       uses: docker/build-push-action@v5
       with:
-        push: false
+        push: true
         context: .
         platforms: linux/arm64
         file: packages/backend/Dockerfile
