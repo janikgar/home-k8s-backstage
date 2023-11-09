@@ -1,10 +1,13 @@
 name: Docker Image CI
 
+permissions:
+  packages: write
+
 on:
-  push:
-    branches: [ $default-branch ]
-  pull_request:
-    branches: [ $default-branch ]
+  # push:
+  #   branches: [ main ]
+  # pull_request:
+  #   branches: [ main ]
   workflow_dispatch:
     inputs: {}
 
@@ -15,7 +18,7 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  build:
+  build-cache:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -24,30 +27,31 @@ jobs:
       with:
         node-version: 18.x
         registry-url: https://registry.npmjs.org/ # Needed for auth
+        cache: yarn
     - name: yarn install
       uses: backstage/actions/yarn-install@v0.6.5
       with:
         cache-prefix: ${{ runner.os }}-v18.x
     - name: yarn build
       run: yarn build:backend
-    # - name: Install cosign
-    #   uses: sigstore/cosign-installer@v3.1.1
+    # # - name: Install cosign
+    # #   uses: sigstore/cosign-installer@v3.1.1
+    # #   with:
+    # #     cosign-release: 'v2.1.1'
+    # - name: Set up Docker Buildx
+    #   uses: docker/setup-buildx-action@v3
+    # # - name: Extract Docker metadata
+    # #   id: meta
+    # #   uses: docker/metadata-action@v5
+    # #   with:
+    # #     images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+    # - name: Set Tag
+    #   run: echo "IMAGE_DATE=$(date '+%Y.%m.%d')" >> "$GITHUB_ENV"
+    # - name: Build
+    #   uses: docker/build-push-action@v5
     #   with:
-    #     cosign-release: 'v2.1.1'
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
-    # - name: Extract Docker metadata
-    #   id: meta
-    #   uses: docker/metadata-action@v5
-    #   with:
-    #     images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-    - name: Set Tag
-      run: echo "IMAGE_DATE=$(date '+%Y.%m.%d')" >> "$GITHUB_ENV"
-    - name: Build
-      uses: docker/build-push-action@v5
-      with:
-        push: true
-        context: .
-        platforms: linux/arm64
-        file: packages/backend/Dockerfile
-        tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_DATE }}
+    #     push: true
+    #     context: .
+    #     platforms: linux/arm64
+    #     file: packages/backend/Dockerfile
+    #     tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_DATE }}
