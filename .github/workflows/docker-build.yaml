@@ -34,7 +34,7 @@ jobs:
       uses: docker/metadata-action@v5
       with:
         images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-        tags: type=schedule,pattern={{ date 'YYYY.MM.DD' }}
+        tags: type=schedule,pattern={{ date 'YYYYMMDD' }}
     # # - name: Install cosign
     # #   uses: sigstore/cosign-installer@v3.1.1
     # #   with:
