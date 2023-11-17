@@ -94,14 +94,16 @@ catalog:
   rules:
     - allow: [Component, System, API, Resource, Location, User, Group]
   locations:
-    - type: file
-      target: ../../home-k8s/resources.yaml
-    - type: file
-      target: ../../home-k8s/org.yaml
-    - type: file
-      target: ../../home-k8s/components.yaml
-    - type: file
-      target: ../../home-k8s/systems.yaml
+    - type: github-discovery
+      target: https://github.com/janikgar/home-k8s/blob/generate-application-files/dist/**/backstage.yaml
+  providers:
+    github:
+      provider:
+        organization: 'janikgar'
+        catalogPath: /dist/**/backstage.yaml
+        filters:
+          branch: generate-application-files
+          repository: home-k8s
 
 kubernetes:
   serviceLocatorMethod:
