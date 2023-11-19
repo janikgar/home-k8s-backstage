@@ -20,7 +20,7 @@ env:
 
 jobs:
   build:
-    runs-on: oci-intel
+    runs-on: oci
     steps:
     - uses: actions/checkout@v3
     - name: Log in to the Container registry
