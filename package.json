@@ -12,6 +12,7 @@
     "build:backend": "yarn workspace backend build",
     "build:all": "backstage-cli repo build --all",
     "build-image": "yarn workspace backend build-image",
+    "build-arm-image": "yarn workspace backend build-arm-image",
     "tsc": "tsc",
     "tsc:full": "tsc --skipLibCheck false --incremental false",
     "clean": "backstage-cli repo clean",
@@ -31,6 +32,9 @@
   "devDependencies": {
     "@backstage/cli": "^0.24.0",
     "@spotify/prettier-config": "^12.0.0",
+    "@types/jest": "^29.5.8",
+    "@types/node": "^20.9.2",
+    "@types/react": "^18.2.37",
     "concurrently": "^6.0.0",
     "lerna": "~7.0.0",
     "node-gyp": "^9.0.0",
@@ -51,5 +55,12 @@
       "prettier --write"
     ]
   },
-  "packageManager": "yarn@4.0.1"
+  "packageManager": "yarn@4.0.2",
+  "peerDependencies": {
+    "process": "*",
+    "react-router-dom": "*"
+  },
+  "dependencies": {
+    "tslib": "^2.6.2"
+  }
 }

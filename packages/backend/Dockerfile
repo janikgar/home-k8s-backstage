@@ -15,20 +15,14 @@ RUN find packages \! -name "package.json" -mindepth 2 -maxdepth 2 -exec rm -rf {
 # Stage 2 - Install dependencies and build packages
 FROM node:18-bullseye-slim AS build
 
-COPY .yarn ./.yarn
-COPY .yarnrc.yml ./
-
 # Install isolate-vm dependencies, these are needed by the @backstage/plugin-scaffolder-backend.
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
     apt-get update && \
     apt-get install -y --no-install-recommends python3 g++ build-essential git
 
-# Install sqlite3 dependencies. You can skip this if you don't use sqlite3 in the image,
-# in which case you should also move better-sqlite3 to "devDependencies" in package.json.
-RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
-    --mount=type=cache,target=/var/lib/apt,sharing=locked \
-    apt-get install -y --no-install-recommends libsqlite3-dev
+COPY .yarn ./.yarn
+COPY .yarnrc.yml ./
 
 USER node
 WORKDIR /app
@@ -38,7 +32,7 @@ COPY --from=packages --chown=node:node /app .
 # Stop cypress from downloading it's massive binary.
 ENV CYPRESS_INSTALL_BINARY=0
 RUN --mount=type=cache,target=/home/node/.cache/yarn,sharing=locked,uid=1000,gid=1000 \
-    yarn install --immutable --network-timeout 600000
+    yarn install --network-timeout 600000 --immutable --inline-builds
 
 COPY --chown=node:node . .
 
@@ -66,9 +60,9 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 
 # Install sqlite3 dependencies. You can skip this if you don't use sqlite3 in the image,
 # in which case you should also move better-sqlite3 to "devDependencies" in package.json.
-RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
-    --mount=type=cache,target=/var/lib/apt,sharing=locked \
-    apt-get install -y --no-install-recommends libsqlite3-dev
+# RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+#     --mount=type=cache,target=/var/lib/apt,sharing=locked \
+#     apt-get install -y --no-install-recommends libsqlite3-dev
 
 # From here on we use the least-privileged `node` user to run the backend.
 USER node

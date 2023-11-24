@@ -9,11 +9,12 @@
   },
   "scripts": {
     "start": "backstage-cli package start",
-    "build": "backstage-cli package build",
+    "build": "backstage-cli package build --stats",
     "lint": "backstage-cli package lint",
     "test": "backstage-cli package test",
     "clean": "backstage-cli package clean",
-    "build-image": "docker build ../.. -f Dockerfile --tag backstage"
+    "build-image": "docker build ../.. -f Dockerfile --tag backstage",
+    "build-arm-image": "docker buildx build ../.. -f Dockerfile --tag backstage --platform linux/arm64 --progress plain"
   },
   "dependencies": {
     "@backstage/backend-common": "^0.19.9",
@@ -41,6 +42,7 @@
     "dockerode": "^3.3.1",
     "express": "^4.17.1",
     "express-promise-router": "^4.1.0",
+    "openid-client": "^5.6.1",
     "pg": "^8.3.0",
     "winston": "^3.2.1"
   },

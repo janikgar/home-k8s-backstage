@@ -1,7 +1,3 @@
-# .git
-# packages/*/src
-# plugins
-# *.local.yaml
 dist-types
 node_modules
 packages/*/dist
@@ -10,3 +6,4 @@ plugins/*/dist
 plugins/*/node_modules
 .yarn/cache
 .yarn/install-state.gz
+.pnp.cjs
