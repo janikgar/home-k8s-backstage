@@ -102,7 +102,7 @@ catalog:
         organization: 'janikgar'
         catalogPath: /dist/**/backstage.yaml
         filters:
-          branch: generate-application-files
+          branch: main
           repository: home-k8s
 
 kubernetes:
@@ -115,7 +115,6 @@ kubernetes:
           name: home-k8s
           authProvider: serviceAccount
           serviceAccountToken: ${K8S_TOKEN}
-          caFile: ../../home-k8s/k8s_ca.pem
           customResources:
             - group: 'monitoring.coreos.com'
               apiVersion: 'v1'

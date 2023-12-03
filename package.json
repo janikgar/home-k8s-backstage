@@ -32,6 +32,7 @@
   "devDependencies": {
     "@backstage/cli": "^0.24.0",
     "@spotify/prettier-config": "^12.0.0",
+    "@types/express": "^4",
     "@types/jest": "^29.5.8",
     "@types/node": "^20.9.2",
     "@types/react": "^18.2.37",
@@ -57,10 +58,17 @@
   },
   "packageManager": "yarn@4.0.2",
   "peerDependencies": {
-    "process": "*",
+    "react-dom": "*",
     "react-router-dom": "*"
   },
   "dependencies": {
+    "@typescript-eslint/typescript-estree": "npm:6.13.1",
+    "process": "^0.11.10",
     "tslib": "^2.6.2"
+  },
+  "dependenciesMeta": {
+    "buildcheck@0.0.6": {
+      "unplugged": true
+    }
   }
 }
