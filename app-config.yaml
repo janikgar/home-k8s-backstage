@@ -83,9 +83,11 @@ auth:
         clientId: ${AUTHENTIK_CLIENT_ID}
         clientSecret: ${AUTHENTIK_CLIENT_SECRET}
 
-
-scaffolder: {}
-  # see https://backstage.io/docs/features/software-templates/configuration for software template options
+scaffolder:
+  defaultAuthor:
+    name: Backstage
+    email: janikgar+backstage@pm.me
+  defaultCommitMessage: Created by Backstage
 
 catalog:
   import:
@@ -95,12 +97,22 @@ catalog:
     - allow: [Component, System, API, Resource, Location, User, Group]
   locations:
     - type: github-discovery
-      target: https://github.com/janikgar/home-k8s/blob/generate-application-files/dist/**/backstage.yaml
+      target: https://github.com/janikgar/home-k8s/blob/main/dist/**/backstage.yaml
+    - type: github-discovery
+      target: https://github.com/janikgar/home-k8s/blob/main/scaffold.yaml
+      rules:
+        - allow: [Template]
   providers:
     github:
       provider:
         organization: 'janikgar'
         catalogPath: /dist/**/backstage.yaml
+        filters:
+          branch: main
+          repository: home-k8s
+      scaffolderProvider:
+        organization: 'janikgar'
+        catalogPath: /scaffold.yaml
         filters:
           branch: main
           repository: home-k8s
