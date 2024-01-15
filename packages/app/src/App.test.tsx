@@ -1,6 +1,7 @@
 import React from 'react';
 import { renderWithEffects } from '@backstage/test-utils';
 import App from './App';
+import '@testing-library/jest-dom';
 
 describe('App', () => {
   it('should render', async () => {
