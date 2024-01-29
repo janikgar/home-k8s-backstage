@@ -10771,7 +10771,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/eslint@npm:*, @types/eslint@npm:^7.29.0 || ^8.4.1":
+"@types/eslint@npm:*, @types/eslint@npm:^7.29.0 || ^8.4.1, @types/eslint@npm:^8":
   version: 8.56.2
   resolution: "@types/eslint@npm:8.56.2"
   dependencies:
@@ -13726,9 +13726,9 @@ __metadata:
   linkType: hard
 
 "caniuse-lite@npm:^1.0.0, caniuse-lite@npm:^1.0.30001565":
-  version: 1.0.30001576
-  resolution: "caniuse-lite@npm:1.0.30001576"
-  checksum: 79cf666f9139c542bdf75eab76171534dc638d2f8efacd325649c8ec6be59de400f0e9d6dc02504f12125626b306c0a848fe86904c01722218b2a479be82a9c1
+  version: 1.0.30001577
+  resolution: "caniuse-lite@npm:1.0.30001577"
+  checksum: 3f94957756227c39477ac3498aa8e975e5e22a24680d49f3cb85239e21b31012e436958621508ffa240201e356e1a680428be320732fc69a8de7163756db42b8
   languageName: node
   linkType: hard
 
@@ -16028,9 +16028,9 @@ __metadata:
   linkType: hard
 
 "electron-to-chromium@npm:^1.4.601":
-  version: 1.4.630
-  resolution: "electron-to-chromium@npm:1.4.630"
-  checksum: dbe3b3437b00f978aa261e1ee9c80eebaba70dea601866b0d64e36f7146328c79bce8416652e4713cfeb0e22428cc7ec1751881860ec892fa32ec8de015d1a9e
+  version: 1.4.632
+  resolution: "electron-to-chromium@npm:1.4.632"
+  checksum: 6766045718893473165b0026c14679fe47107a83ba1399e644f1bf2268cbd9f0eb4e6f1ce573568d511fef64ca72c4c3820968ecd5f17fadb89cc4ea49191e10
   languageName: node
   linkType: hard
 
@@ -16835,7 +16835,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint@npm:^8.6.0":
+"eslint@npm:^8.56.0, eslint@npm:^8.6.0":
   version: 8.56.0
   resolution: "eslint@npm:8.56.0"
   dependencies:
@@ -26090,15 +26090,15 @@ __metadata:
   linkType: hard
 
 "proto3-json-serializer@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "proto3-json-serializer@npm:2.0.0"
+  version: 2.0.1
+  resolution: "proto3-json-serializer@npm:2.0.1"
   dependencies:
-    protobufjs: "npm:^7.0.0"
-  checksum: 2b63d6d9d740f107f0c0864adb4cb16c7beaa7d55fccce0c8cd1b9e30cbb2571f11798bff2410532024ca87684d00ab54150a44c0d1993738424065b8b8067ed
+    protobufjs: "npm:^7.2.5"
+  checksum: d329eb9e5b6f3c51fd50adba3de6cf9880d1ef4a750172a6eb63ba1af091557b1b2b5fb93636b8ffd04ca43bbbce2bb50b21a827747af5c60e8ede25f456fcd4
   languageName: node
   linkType: hard
 
-"protobufjs@npm:7.2.5, protobufjs@npm:^7.0.0, protobufjs@npm:^7.2.4, protobufjs@npm:^7.2.5":
+"protobufjs@npm:7.2.5, protobufjs@npm:^7.2.4, protobufjs@npm:^7.2.5":
   version: 7.2.5
   resolution: "protobufjs@npm:7.2.5"
   dependencies:
@@ -27719,10 +27719,13 @@ __metadata:
     "@backstage/e2e-test-utils": "npm:^0.1.0"
     "@playwright/test": "npm:^1.32.3"
     "@spotify/prettier-config": "npm:^12.0.0"
+    "@types/eslint": "npm:^8"
     "@types/jest": "npm:^29.5.8"
     "@types/node": "npm:^20.9.2"
     "@typescript-eslint/scope-manager": "npm:^6.19.0"
     concurrently: "npm:^8.0.0"
+    eslint: "npm:^8.56.0"
+    jest-environment-node: "npm:^29.7.0"
     lerna: "npm:^7.3.0"
     node-gyp: "npm:^9.0.0"
     prettier: "npm:^2.3.2"
