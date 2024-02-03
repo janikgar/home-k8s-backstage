@@ -5,10 +5,10 @@ permissions:
   packages: write
 
 on:
-  # push:
-    # branches: [ main ]
-  # pull_request:
-  #   branches: [ main ]
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
   workflow_dispatch:
     inputs: {}
 
@@ -37,10 +37,10 @@ jobs:
         tags: |
           type=schedule,pattern={{ date 'YYYYMMDD' }}
           type=sha
-    # # - name: Install cosign
-    # #   uses: sigstore/cosign-installer@v3.1.1
-    # #   with:
-    # #     cosign-release: 'v2.1.1'
+    - name: Install cosign
+      uses: sigstore/cosign-installer@v3.1.1
+      with:
+        cosign-release: 'v2.1.1'
     # - name: Set up QEMU
     #   uses: docker/setup-qemu-action@v3
     #   with:
