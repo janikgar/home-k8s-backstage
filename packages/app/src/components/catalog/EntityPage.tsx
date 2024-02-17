@@ -58,7 +58,7 @@ import {
 import { TechDocsAddons } from '@backstage/plugin-techdocs-react';
 import { ReportIssue } from '@backstage/plugin-techdocs-module-addons-contrib';
 
-import { EntityArgoCDOverviewCard, isArgocdAvailable } from '@roadiehq/backstage-plugin-argo-cd';
+// import { EntityArgoCDOverviewCard, isArgocdAvailable } from '@roadiehq/backstage-plugin-argo-cd';
 // import { EntityGrafanaAlertsCard, isAlertSelectorAvailable, EntityGrafanaDashboardsCard } from '@k-phoen/backstage-plugin-grafana';
 
 const techdocsContent = (
@@ -140,13 +140,13 @@ const overviewContent = (
     <Grid item md={8} xs={12}>
       <EntityHasSubcomponentsCard variant="gridItem" />
     </Grid>
-    <EntitySwitch>
+    {/* <EntitySwitch>
       <EntitySwitch.Case if={e => Boolean(isArgocdAvailable(e))}>
         <Grid item md={8} xs={12}>
           <EntityArgoCDOverviewCard />
         </Grid>
       </EntitySwitch.Case>
-    </EntitySwitch>
+    </EntitySwitch> */}
     {/* <EntitySwitch>
       <EntitySwitch.Case if={e => Boolean(isAlertSelectorAvailable(e))}>
         <Grid item md={8} xs={12}>
