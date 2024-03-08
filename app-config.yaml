@@ -72,16 +72,16 @@ techdocs:
   publisher:
     type: 'local' # Alternatives - 'googleGcs' or 'awsS3'. Read documentation for using alternatives.
 
-auth:
-  environment: development
-  session:
-    secret: ${SESSION_SECRET}
-  providers:
-    authentik-provider:
-      development:
-        metadataUrl: https://authentik.home.lan/application/o/backstage/.well-known/openid-configuration
-        clientId: ${AUTHENTIK_CLIENT_ID}
-        clientSecret: ${AUTHENTIK_CLIENT_SECRET}
+# auth:
+#   environment: development
+#   session:
+#     secret: ${SESSION_SECRET}
+#   providers:
+#     authentik-provider:
+#       development:
+#         metadataUrl: https://authentik.home.lan/application/o/backstage/.well-known/openid-configuration
+#         clientId: ${AUTHENTIK_CLIENT_ID}
+#         clientSecret: ${AUTHENTIK_CLIENT_SECRET}
 
 scaffolder:
   defaultAuthor:

@@ -5,12 +5,7 @@ import {
 } from '@backstage/plugin-auth-backend';
 import { Router } from 'express';
 import { PluginEnvironment } from '../types';
-import { stringifyEntityRef, DEFAULT_NAMESPACE } from '@backstage/catalog-model';
-import { custom } from 'openid-client';
 
-custom.setHttpOptionsDefaults({
-  timeout: 7500,
-});
 
 export default async function createPlugin(
   env: PluginEnvironment,
@@ -23,23 +18,6 @@ export default async function createPlugin(
     tokenManager: env.tokenManager,
     providerFactories: {
       ...defaultAuthProviderFactories,
-      'authentik-provider': providers.oidc.create({
-        signIn: {
-          resolver(info, ctx) {
-            const userRef = stringifyEntityRef({
-              kind: 'User',
-              name: info.result.userinfo.sub,
-              namespace: DEFAULT_NAMESPACE,
-            });
-            return ctx.issueToken({
-              claims: {
-                sub: userRef,
-                ent: [userRef],
-              },
-            });
-          },
-        },
-      }),
 
       // This replaces the default GitHub auth provider with a customized one.
       // The `signIn` option enables sign-in for this provider, using the
