@@ -34,24 +34,8 @@ import { CatalogGraphPage } from '@backstage/plugin-catalog-graph';
 import { RequirePermission } from '@backstage/plugin-permission-react';
 import { catalogEntityCreatePermission } from '@backstage/plugin-catalog-common/alpha';
 
-import { authentikOIDCAuthApiRef } from './apis';
-import { SignInPage  } from '@backstage/core-components';
-
 const app = createApp({
-  components: {
-    SignInPage: props => (
-      <SignInPage
-        {...props}
-        auto
-        provider={{
-          id: 'authentik-provider',
-          title: 'Authentik',
-          message: 'Sign in using Authentik',
-          apiRef: authentikOIDCAuthApiRef,
-        }}
-      />
-    ),
-  },
+  components: {},
   apis,
   bindRoutes({ bind }) {
     bind(catalogPlugin.externalRoutes, {
