@@ -2,10 +2,10 @@ import React from 'react';
 import { Button, Grid } from '@material-ui/core';
 import {
   EntityApiDefinitionCard,
-  // EntityConsumedApisCard,
+  EntityConsumedApisCard,
   EntityConsumingComponentsCard,
   EntityHasApisCard,
-  // EntityProvidedApisCard,
+  EntityProvidedApisCard,
   EntityProvidingComponentsCard,
 } from '@backstage/plugin-api-docs';
 import {
@@ -170,11 +170,11 @@ const serviceEntityPage = (
       {overviewContent}
     </EntityLayout.Route>
 
-    {/* <EntityLayout.Route path="/ci-cd" title="CI/CD">
+    <EntityLayout.Route path="/ci-cd" title="CI/CD">
       {cicdContent}
-    </EntityLayout.Route> */}
+    </EntityLayout.Route>
 
-    {/* <EntityLayout.Route path="/api" title="API">
+    <EntityLayout.Route path="/api" title="API">
       <Grid container spacing={3} alignItems="stretch">
         <Grid item md={6}>
           <EntityProvidedApisCard />
@@ -183,7 +183,7 @@ const serviceEntityPage = (
           <EntityConsumedApisCard />
         </Grid>
       </Grid>
-    </EntityLayout.Route> */}
+    </EntityLayout.Route>
 
     <EntityLayout.Route path="/dependencies" title="Dependencies">
       <Grid container spacing={3} alignItems="stretch">
@@ -199,7 +199,6 @@ const serviceEntityPage = (
     <EntityLayout.Route path="/docs" title="Docs">
       {techdocsContent}
     </EntityLayout.Route>
-
   </EntityLayout>
 );
 

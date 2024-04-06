@@ -22,12 +22,16 @@ import {
 import { TechDocsAddons } from '@backstage/plugin-techdocs-react';
 import { ReportIssue } from '@backstage/plugin-techdocs-module-addons-contrib';
 import { UserSettingsPage } from '@backstage/plugin-user-settings';
-import { authentikOIDCAuthApiRef, apis } from './apis';
+import { apis } from './apis';
 import { entityPage } from './components/catalog/EntityPage';
 import { searchPage } from './components/search/SearchPage';
 import { Root } from './components/Root';
 
-import { AlertDisplay, OAuthRequestDialog, SignInPage } from '@backstage/core-components';
+import {
+  AlertDisplay,
+  OAuthRequestDialog,
+  SignInPage,
+} from '@backstage/core-components';
 import { createApp } from '@backstage/app-defaults';
 import { AppRouter, FlatRoutes } from '@backstage/core-app-api';
 import { CatalogGraphPage } from '@backstage/plugin-catalog-graph';
@@ -35,23 +39,6 @@ import { RequirePermission } from '@backstage/plugin-permission-react';
 import { catalogEntityCreatePermission } from '@backstage/plugin-catalog-common/alpha';
 
 const app = createApp({
-  components: {
-    SignInPage: props => (
-      <SignInPage
-        {...props}
-        auto
-        providers={[
-          // 'guest',
-          {
-            id: 'authentik',
-            title: 'Authentik',
-            message: 'Sign in with Authentik',
-            apiRef: authentikOIDCAuthApiRef,
-          }
-        ]}
-      />
-    ),
-  },
   apis,
   bindRoutes({ bind }) {
     bind(catalogPlugin.externalRoutes, {
@@ -69,6 +56,9 @@ const app = createApp({
     bind(orgPlugin.externalRoutes, {
       catalogIndex: catalogPlugin.routes.catalogIndex,
     });
+  },
+  components: {
+    SignInPage: props => <SignInPage {...props} auto providers={['guest']} />,
   },
 });
 
