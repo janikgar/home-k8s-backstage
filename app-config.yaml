@@ -44,18 +44,19 @@ integrations:
     #   token: ${GHE_TOKEN}
 
 proxy:
-  '/argocd/api':
-    target: https://argocd.home.lan/api/v1/
-    changeOrigin: true
-    # only if your argocd api has self-signed cert
-    secure: false
-    headers:
-      Cookie:
-        $env: ARGOCD_AUTH_TOKEN
-  'grafana/api':
-    target: https://grafana.home.lan
-    headers:
-      Authorization: Bearer ${GRAFANA_TOKEN}
+  endpoints:
+    '/argocd/api':
+      target: https://argocd.home.lan/api/v1/
+      changeOrigin: true
+      # only if your argocd api has self-signed cert
+      secure: false
+      headers:
+        Cookie:
+          $env: ARGOCD_AUTH_TOKEN
+    'grafana/api':
+      target: https://grafana.home.lan
+      headers:
+        Authorization: Bearer ${GRAFANA_TOKEN}
 
 grafana:
   domain: https://grafana.home.lan
@@ -72,16 +73,23 @@ techdocs:
   publisher:
     type: 'local' # Alternatives - 'googleGcs' or 'awsS3'. Read documentation for using alternatives.
 
-# auth:
-#   environment: development
-#   session:
-#     secret: ${SESSION_SECRET}
-#   providers:
-#     authentik-provider:
-#       development:
-#         metadataUrl: https://authentik.home.lan/application/o/backstage/.well-known/openid-configuration
-#         clientId: ${AUTHENTIK_CLIENT_ID}
-#         clientSecret: ${AUTHENTIK_CLIENT_SECRET}
+auth:
+  environment: development
+  session:
+    secret: ${SESSION_SECRET}
+  providers:
+    guest: {}
+    authentik:
+      development:
+        metadataUrl: https://authentik.home.lan/application/o/backstage/.well-known/openid-configuration
+        authorizationUrl: https://authentik.home.lan/application/o/authorize/
+        tokenUrl: https://authentik.home.lan/application/o/token/
+        clientId: ${AUTHENTIK_CLIENT_ID}
+        clientSecret: ${AUTHENTIK_CLIENT_SECRET}
+        signIn:
+          resolvers:
+            - resolver: emailMatchingUserEntityProfileEmail
+            - resolver: emailLocalPartMatchingUserEntityName
 
 scaffolder:
   defaultAuthor:
@@ -95,24 +103,34 @@ catalog:
     pullRequestBranchName: backstage-integration
   rules:
     - allow: [Component, System, API, Resource, Location, User, Group]
-  locations:
-    - type: github-discovery
-      target: https://github.com/janikgar/home-k8s/blob/main/dist/**/backstage.yaml
-    - type: github-discovery
-      target: https://github.com/janikgar/home-k8s/blob/main/scaffold.yaml
-      rules:
-        - allow: [Template]
+  # locations:
+  #   - type: github-discovery
+  #     target: https://github.com/janikgar/home-k8s/blob/main/dist/**/backstage.yaml
+  #   - type: github-discovery
+  #     target: https://github.com/janikgar/home-k8s/blob/main/scaffold.yaml
+  #     rules:
+  #       - allow: [Template]
   providers:
     github:
       provider:
         organization: 'janikgar'
         catalogPath: /dist/**/backstage.yaml
+        schedule:
+          frequency:
+            minutes: 30
+          timeout:
+            minutes: 3
         filters:
           branch: main
           repository: home-k8s
       scaffolderProvider:
         organization: 'janikgar'
         catalogPath: /scaffold.yaml
+        schedule:
+          frequency:
+            minutes: 30
+          timeout:
+            minutes: 3
         filters:
           branch: main
           repository: home-k8s
