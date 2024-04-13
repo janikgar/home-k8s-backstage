@@ -4,7 +4,6 @@ import { authProvidersExtensionPoint, createOAuthProviderFactory, commonSignInRe
 import { oidcAuthenticator } from '@backstage/plugin-auth-backend-module-oidc-provider';
 import { createSignInResolverFactory } from '@backstage/plugin-auth-node';
 import { stringifyEntityRef, DEFAULT_NAMESPACE } from '@backstage/catalog-model';
-import { legacyPlugin } from '@backstage/backend-common';
 
 const backend = createBackend();
 
