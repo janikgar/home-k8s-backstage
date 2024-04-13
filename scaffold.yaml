@@ -1,0 +1,125 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: homelan-app
+  title: home.lan Application Template
+  description: Template for home lab applications with stubs for TechDocs, Backstage information, and ArgoCD
+spec:
+  owner: group:default/k8s-admin
+  type: component
+  parameters:
+    - title: Basic App Info
+      required:
+        - app
+        - namespace
+        - chartName
+        - chartURL
+        - chartVersion
+      properties:
+        app:
+          title: App Name
+          type: string
+          description: Internal name for this application
+          ui:autofocus: true
+        namespace:
+          title: App Namespace
+          type: string
+          description: Application namespace
+        createNamespace:
+          title: Create namespace?
+          type: boolean
+          description: Whether or not to create the namespace
+        chartName:
+          title: Chart Name
+          type: string
+          description: Helm Chart name
+        chartURL:
+          title: Chart URL
+          type: string
+          description: Helm Chart source URL
+        chartVersion:
+          title: Chart Version
+          type: string
+          description: Helm Chart version
+    - title: App Metadata
+      required:
+        - purpose
+        - deployment
+      properties:
+        purpose:
+          title: Purpose
+          type: string
+          description: What does this service do?
+        deployment:
+          title: Deployed
+          type: string
+          description: How is this service deployed?
+        location:
+          title: Location (URL)
+          type: string
+          description: (optional) URL for service ingress
+        monitoring:
+          title: Monitoring
+          type: string
+          description: (optional) How the service is monitored (dashboards, alerts, etc.)
+    - title: Extras
+      properties:
+        createExtraFile:
+          title: Extra File?
+          type: boolean
+          description: Create additional file for adding Kubernetes manifests
+        createIgnoreDifferences:
+          title: Ignore Differences?
+          type: boolean
+          description: Create additional file for adding JSON pointers for resources where ArgoCD should ignore changes
+        serverSideApply:
+          title: Server-Side Apply?
+          type: boolean
+          description: Request ArgoCD to make all applies server-side (needed to get around size limits)
+  steps:
+    - id: fetch-template
+      name: Fetch Template
+      action: fetch:template
+      input:
+        url: ./scaffold
+        values:
+          app: ${{ parameters.app }}
+          namespace: ${{ parameters.namespace }}
+          createNamespace: ${{ parameters.createNamespace }}
+          chartName: ${{ parameters.chartName }}
+          chartURL: ${{ parameters.chartURL }}
+          chartVersion: ${{ parameters.chartVersion }}
+          purpose: ${{ parameters.purpose }}
+          deployment: ${{ parameters.deployment }}
+          location: ${{ parameters.location }}
+          monitoring: ${{ parameters.monitoring }}
+          createExtraFile: ${{ parameters.createExtraFile }}
+          serverSideApply: ${{ parameters.serverSideApply }}
+          createIgnoreDifferences: ${{ parameters.createIgnoreDifferences }}
+    - id: trimExtra
+      action: fs:delete
+      name: Remove Extra File if not needed
+      if: ${{ not parameters.createExtraFile }}
+      input:
+        files:
+          - apps/${{ parameters.app }}.extra
+    - id: trimIgnore
+      action: fs:delete
+      name: Remove Ignore File if not needed
+      if: ${{ not parameters.createIgnoreDifferences }}
+      input:
+        files:
+          - apps/${{ parameters.app }}.ignores
+    - id: publish
+      name: Publish
+      action: publish:github:pull-request
+      input:
+        repoUrl: github.com?repo=home-k8s&owner=janikgar
+        branchName: add-${{ parameters.app }}
+        title: Add ${{ parameters.app }} to catalog
+        description: Add ${{ parameters.app }} to catalog
+        update: true
+  output:
+    links:
+      - title: Pull Request for new application
+        url: ${{ steps['publish'].output.remoteUrl }}
