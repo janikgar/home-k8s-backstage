@@ -1,6 +1,6 @@
 import React from 'react';
 import { Navigate, Route } from 'react-router-dom';
-import { apiDocsPlugin, ApiExplorerPage } from '@backstage/plugin-api-docs';
+// import { apiDocsPlugin, ApiExplorerPage } from '@backstage/plugin-api-docs';
 import {
   CatalogEntityPage,
   CatalogIndexPage,
@@ -13,7 +13,7 @@ import {
 import { ScaffolderPage, scaffolderPlugin } from '@backstage/plugin-scaffolder';
 import { orgPlugin } from '@backstage/plugin-org';
 import { SearchPage } from '@backstage/plugin-search';
-import { TechRadarPage } from '@backstage/plugin-tech-radar';
+// import { TechRadarPage } from '@backstage/plugin-tech-radar';
 import {
   TechDocsIndexPage,
   techdocsPlugin,
@@ -38,6 +38,8 @@ import { CatalogGraphPage } from '@backstage/plugin-catalog-graph';
 import { RequirePermission } from '@backstage/plugin-permission-react';
 import { catalogEntityCreatePermission } from '@backstage/plugin-catalog-common/alpha';
 
+import { authentikOIDCAuthApiRef } from './apis';
+
 const app = createApp({
   apis,
   bindRoutes({ bind }) {
@@ -46,9 +48,9 @@ const app = createApp({
       viewTechDoc: techdocsPlugin.routes.docRoot,
       createFromTemplate: scaffolderPlugin.routes.selectedTemplate,
     });
-    bind(apiDocsPlugin.externalRoutes, {
-      registerApi: catalogImportPlugin.routes.importPage,
-    });
+    // bind(apiDocsPlugin.externalRoutes, {
+    //   registerApi: catalogImportPlugin.routes.importPage,
+    // });
     bind(scaffolderPlugin.externalRoutes, {
       registerComponent: catalogImportPlugin.routes.importPage,
       viewTechDoc: techdocsPlugin.routes.docRoot,
@@ -58,7 +60,18 @@ const app = createApp({
     });
   },
   components: {
-    SignInPage: props => <SignInPage {...props} auto providers={['guest']} />,
+    SignInPage: props => <SignInPage
+      {...props}
+      auto
+      providers={[
+        'guest',
+        {
+          id: 'authentik-provider',
+          title: 'Authentik',
+          message: 'Sign in using Authentik',
+          apiRef: authentikOIDCAuthApiRef,
+        }
+      ]} />,
   },
 });
 
@@ -82,11 +95,11 @@ const routes = (
       </TechDocsAddons>
     </Route>
     <Route path="/create" element={<ScaffolderPage />} />
-    <Route path="/api-docs" element={<ApiExplorerPage />} />
-    <Route
+    {/* <Route path="/api-docs" element={<ApiExplorerPage />} /> */}
+    {/* <Route
       path="/tech-radar"
       element={<TechRadarPage width={1500} height={800} />}
-    />
+    /> */}
     <Route
       path="/catalog-import"
       element={

@@ -4076,6 +4076,69 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@backstage/plugin-kubernetes-react@npm:^0.3.3":
+  version: 0.3.3
+  resolution: "@backstage/plugin-kubernetes-react@npm:0.3.3"
+  dependencies:
+    "@backstage/catalog-model": "npm:^1.4.5"
+    "@backstage/core-components": "npm:^0.14.3"
+    "@backstage/core-plugin-api": "npm:^1.9.1"
+    "@backstage/errors": "npm:^1.2.4"
+    "@backstage/plugin-kubernetes-common": "npm:^0.7.5"
+    "@backstage/types": "npm:^1.1.1"
+    "@kubernetes-models/apimachinery": "npm:^1.1.0"
+    "@kubernetes-models/base": "npm:^4.0.1"
+    "@kubernetes/client-node": "npm:^0.20.0"
+    "@material-ui/core": "npm:^4.9.13"
+    "@material-ui/icons": "npm:^4.11.3"
+    "@material-ui/lab": "npm:^4.0.0-alpha.61"
+    "@types/react": "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
+    cronstrue: "npm:^2.32.0"
+    js-yaml: "npm:^4.1.0"
+    kubernetes-models: "npm:^4.3.1"
+    lodash: "npm:^4.17.21"
+    luxon: "npm:^3.0.0"
+    react-use: "npm:^17.4.0"
+    xterm: "npm:^5.3.0"
+    xterm-addon-attach: "npm:^0.9.0"
+    xterm-addon-fit: "npm:^0.8.0"
+  peerDependencies:
+    react: ^16.13.1 || ^17.0.0 || ^18.0.0
+  checksum: 10c0/d89841b9a379888798f516b73b6fff46ef5b2e076120e2b3f6e5f66a98cb1be291f0a79648bc978975967f991921a1e6c88a0fa5e7035135d13c4d661d684e35
+  languageName: node
+  linkType: hard
+
+"@backstage/plugin-kubernetes@npm:^0.11.8":
+  version: 0.11.8
+  resolution: "@backstage/plugin-kubernetes@npm:0.11.8"
+  dependencies:
+    "@backstage/catalog-model": "npm:^1.4.5"
+    "@backstage/core-components": "npm:^0.14.3"
+    "@backstage/core-plugin-api": "npm:^1.9.1"
+    "@backstage/plugin-catalog-react": "npm:^1.11.2"
+    "@backstage/plugin-kubernetes-common": "npm:^0.7.5"
+    "@backstage/plugin-kubernetes-react": "npm:^0.3.3"
+    "@kubernetes-models/apimachinery": "npm:^1.1.0"
+    "@kubernetes-models/base": "npm:^4.0.1"
+    "@kubernetes/client-node": "npm:0.20.0"
+    "@material-ui/core": "npm:^4.12.2"
+    "@types/react": "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
+    cronstrue: "npm:^2.2.0"
+    js-yaml: "npm:^4.0.0"
+    kubernetes-models: "npm:^4.1.0"
+    lodash: "npm:^4.17.21"
+    luxon: "npm:^3.0.0"
+    xterm: "npm:^5.2.1"
+    xterm-addon-attach: "npm:^0.9.0"
+    xterm-addon-fit: "npm:^0.8.0"
+  peerDependencies:
+    react: ^16.13.1 || ^17.0.0 || ^18.0.0
+    react-dom: ^16.13.1 || ^17.0.0 || ^18.0.0
+    react-router-dom: 6.0.0-beta.0 || ^6.3.0
+  checksum: 10c0/79c1ff5df507d61c5b292241f6f9efb91691f3c4794221c2c3170e75d6050b9895e725b6dbb90b9671fd14f9371fd8546311bfcdf49594ad2d441aa990fe4562
+  languageName: node
+  linkType: hard
+
 "@backstage/plugin-org@npm:^0.6.23":
   version: 0.6.23
   resolution: "@backstage/plugin-org@npm:0.6.23"
@@ -6467,7 +6530,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@kubernetes-models/apimachinery@npm:^1.2.1":
+"@kubernetes-models/apimachinery@npm:^1.1.0, @kubernetes-models/apimachinery@npm:^1.2.1":
   version: 1.2.1
   resolution: "@kubernetes-models/apimachinery@npm:1.2.1"
   dependencies:
@@ -6478,7 +6541,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@kubernetes-models/base@npm:^4.0.3":
+"@kubernetes-models/base@npm:^4.0.1, @kubernetes-models/base@npm:^4.0.3":
   version: 4.0.3
   resolution: "@kubernetes-models/base@npm:4.0.3"
   dependencies:
@@ -6721,7 +6784,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@material-ui/icons@npm:^4.9.1":
+"@material-ui/icons@npm:^4.11.3, @material-ui/icons@npm:^4.9.1":
   version: 4.11.3
   resolution: "@material-ui/icons@npm:4.11.3"
   dependencies:
@@ -6738,7 +6801,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@material-ui/lab@npm:4.0.0-alpha.61":
+"@material-ui/lab@npm:4.0.0-alpha.61, @material-ui/lab@npm:^4.0.0-alpha.61":
   version: 4.0.0-alpha.61
   resolution: "@material-ui/lab@npm:4.0.0-alpha.61"
   dependencies:
@@ -12745,6 +12808,7 @@ __metadata:
     "@backstage/plugin-catalog-import": "npm:^0.10.9"
     "@backstage/plugin-catalog-react": "npm:^1.11.2"
     "@backstage/plugin-github-actions": "npm:^0.6.14"
+    "@backstage/plugin-kubernetes": "npm:^0.11.8"
     "@backstage/plugin-org": "npm:^0.6.23"
     "@backstage/plugin-permission-react": "npm:^0.4.21"
     "@backstage/plugin-scaffolder": "npm:^1.19.2"
@@ -15254,6 +15318,15 @@ __metadata:
     "@types/luxon": "npm:~3.3.0"
     luxon: "npm:~3.4.0"
   checksum: 10c0/f8328ce1052531bc14372acbfbddb38db33b30b29ac878d574b317779160b2947c9315c81dccb8a33724418cd86440a92269055037c96a2e917c867d57274009
+  languageName: node
+  linkType: hard
+
+"cronstrue@npm:^2.2.0, cronstrue@npm:^2.32.0":
+  version: 2.49.0
+  resolution: "cronstrue@npm:2.49.0"
+  bin:
+    cronstrue: bin/cli.js
+  checksum: 10c0/bdbcbe745b12b51b5ff123b561d9b95d624963b1d0d43717a70adf20872f58e87ad74c62d255133f9b0e8adcc682cb7e5ea405c4da36ba7ec5146af1f0d75017
   languageName: node
   linkType: hard
 
@@ -21750,7 +21823,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"kubernetes-models@npm:^4.3.1":
+"kubernetes-models@npm:^4.1.0, kubernetes-models@npm:^4.3.1":
   version: 4.3.1
   resolution: "kubernetes-models@npm:4.3.1"
   dependencies:
@@ -27103,7 +27176,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-use@npm:^17.2.4, react-use@npm:^17.3.2":
+"react-use@npm:^17.2.4, react-use@npm:^17.3.2, react-use@npm:^17.4.0":
   version: 17.5.0
   resolution: "react-use@npm:17.5.0"
   dependencies:
@@ -31900,6 +31973,31 @@ __metadata:
   version: 4.0.2
   resolution: "xtend@npm:4.0.2"
   checksum: 10c0/366ae4783eec6100f8a02dff02ac907bf29f9a00b82ac0264b4d8b832ead18306797e283cf19de776538babfdcb2101375ec5646b59f08c52128ac4ab812ed0e
+  languageName: node
+  linkType: hard
+
+"xterm-addon-attach@npm:^0.9.0":
+  version: 0.9.0
+  resolution: "xterm-addon-attach@npm:0.9.0"
+  peerDependencies:
+    xterm: ^5.0.0
+  checksum: 10c0/bbecfd4daf5995014245cadcaddf0140b55cf0c80b37411ba0277fa7ba775fd7aab24431eb08161f7941ba605ae0946dbaded9fe753be881ae0d3c6d37bb8e63
+  languageName: node
+  linkType: hard
+
+"xterm-addon-fit@npm:^0.8.0":
+  version: 0.8.0
+  resolution: "xterm-addon-fit@npm:0.8.0"
+  peerDependencies:
+    xterm: ^5.0.0
+  checksum: 10c0/39f77c9ec74bcc048ad74fbc4b9d610070c0a67971837f7edf92a8d21d65189c887986713d6ab22c04e2704253022488324d27fdb2425dc8aa95a9b679703101
+  languageName: node
+  linkType: hard
+
+"xterm@npm:^5.2.1, xterm@npm:^5.3.0":
+  version: 5.3.0
+  resolution: "xterm@npm:5.3.0"
+  checksum: 10c0/39bf5ea933cc2f65d5970560d065b4db645ed03c820bcf6c6239bd504e41a876ab1a773ad9e4e09476ba85a4891534702b9fbb885b0838d79e6620ed2f856bae
   languageName: node
   linkType: hard
 

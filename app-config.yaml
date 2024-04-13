@@ -73,23 +73,28 @@ techdocs:
   publisher:
     type: 'local' # Alternatives - 'googleGcs' or 'awsS3'. Read documentation for using alternatives.
 
+permission:
+  enabled: true
+
 auth:
   environment: development
   session:
     secret: ${SESSION_SECRET}
   providers:
     guest: {}
-    authentik:
+    authentik-provider:
       development:
         metadataUrl: https://authentik.home.lan/application/o/backstage/.well-known/openid-configuration
         authorizationUrl: https://authentik.home.lan/application/o/authorize/
         tokenUrl: https://authentik.home.lan/application/o/token/
         clientId: ${AUTHENTIK_CLIENT_ID}
         clientSecret: ${AUTHENTIK_CLIENT_SECRET}
+        prompt: consent
         signIn:
           resolvers:
-            - resolver: emailMatchingUserEntityProfileEmail
-            - resolver: emailLocalPartMatchingUserEntityName
+            # - resolver: emailMatchingUserEntityProfileEmail
+            # - resolver: emailLocalPartMatchingUserEntityName
+            - resolver: mySignInResolver
 
 scaffolder:
   defaultAuthor:
@@ -102,19 +107,15 @@ catalog:
     entityFilename: catalog-info.yaml
     pullRequestBranchName: backstage-integration
   rules:
-    - allow: [Component, System, API, Resource, Location, User, Group]
-  # locations:
-  #   - type: github-discovery
-  #     target: https://github.com/janikgar/home-k8s/blob/main/dist/**/backstage.yaml
-  #   - type: github-discovery
-  #     target: https://github.com/janikgar/home-k8s/blob/main/scaffold.yaml
-  #     rules:
-  #       - allow: [Template]
+    - allow: [Component, System, API, Resource, Location, User, Group, Template]
+  locations: 
+    - type: file
+      target: ../../catalog-info.yaml
   providers:
     github:
-      provider:
+      entityProvider:
         organization: 'janikgar'
-        catalogPath: /dist/**/backstage.yaml
+        catalogPath: '/dist/**/catalog-info.yaml'
         schedule:
           frequency:
             minutes: 30
@@ -125,7 +126,7 @@ catalog:
           repository: home-k8s
       scaffolderProvider:
         organization: 'janikgar'
-        catalogPath: /scaffold.yaml
+        catalogPath: '/scaffold.yaml'
         schedule:
           frequency:
             minutes: 30
