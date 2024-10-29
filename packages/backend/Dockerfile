@@ -80,5 +80,6 @@ COPY --chown=node:node app-config.yaml ./
 
 # This switches many Node.js dependencies to production mode.
 ENV NODE_ENV=production
+ENV NODE_OPTIONS="--no-node-snapshot"
 
 CMD ["node", "packages/backend", "--config", "app-config.yaml"]
