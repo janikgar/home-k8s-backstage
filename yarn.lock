@@ -2878,7 +2878,7 @@ __metadata:
 
 "@backstage/backend-common@patch:@backstage/backend-common@npm%3A0.25.0#~/.yarn/patches/@backstage-backend-common-npm-0.25.0-8674b6822b.patch":
   version: 0.25.0
-  resolution: "@backstage/backend-common@patch:@backstage/backend-common@npm%3A0.25.0#~/.yarn/patches/@backstage-backend-common-npm-0.25.0-8674b6822b.patch::version=0.25.0&hash=f37516"
+  resolution: "@backstage/backend-common@patch:@backstage/backend-common@npm%3A0.25.0#~/.yarn/patches/@backstage-backend-common-npm-0.25.0-8674b6822b.patch::version=0.25.0&hash=191ac5"
   dependencies:
     "@aws-sdk/abort-controller": "npm:^3.347.0"
     "@aws-sdk/client-codecommit": "npm:^3.350.0"
@@ -2949,7 +2949,7 @@ __metadata:
   peerDependenciesMeta:
     pg-connection-string:
       optional: true
-  checksum: 10c0/33a77fb8bef2a2cdf6a2c3b2000baea5d8c99339568850730b87019b558e85bdb17fbb913f927d8034b801a7570c1ce2d7180bc426fb5ae9f10edccb45a0aaae
+  checksum: 10c0/b8137ce65a8e708c92019e3b48acb91767333e773912e5ae3a3fd18bce942ce998ea6e6f5e87f10f8ab150e98f14fb3bbda1fb5d91e7920f919be9272554c50f
   languageName: node
   linkType: hard
 

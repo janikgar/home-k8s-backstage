@@ -1,5 +1,5 @@
 diff --git a/package.json b/package.json
-index 8d1ffacc659e6c9c93f83a6428f671a6ebb4d468..21eef1f5a4af893928da1a70cb7f35b675524195 100644
+index 8d1ffacc659e6c9c93f83a6428f671a6ebb4d468..9bb65893ec46aac76a3ae412c8aca4b449df99fd 100644
 --- a/package.json
 +++ b/package.json
 @@ -73,7 +73,7 @@
@@ -7,7 +7,7 @@ index 8d1ffacc659e6c9c93f83a6428f671a6ebb4d468..21eef1f5a4af893928da1a70cb7f35b6
      "@keyv/memcache": "^1.3.5",
      "@keyv/redis": "^2.5.3",
 -    "@kubernetes/client-node": "0.20.0",
-+    "@kubernetes/client-node": "^1.0.0-rc7",
++    "@kubernetes/client-node": "1.0.0-rc7",
      "@manypkg/get-packages": "^1.1.3",
      "@octokit/rest": "^19.0.3",
      "@types/cors": "^2.8.6",
