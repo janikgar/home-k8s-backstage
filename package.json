@@ -41,8 +41,7 @@
   "resolutions": {
     "@types/react": "^18",
     "@types/react-dom": "^18",
-    "@kubernetes/client-node": "1.0.0-rc7",
-    "prismjs": "^1.29.0"
+    "@kubernetes/client-node": "1.0.0-rc7"
   },
   "prettier": "@backstage/cli/config/prettier",
   "lint-staged": {
