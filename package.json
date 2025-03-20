@@ -46,7 +46,7 @@
     "@babel/runtime-corejs3": "7.26.10",
     "@babel/runtime": "7.26.10",
     "@babel/helpers": "7.26.10",
-    "primsjs": "1.30.0",
+    "prismjs": "1.30.0",
     "xml-crypto": "6.0.1"
   },
   "prettier": "@backstage/cli/config/prettier",
