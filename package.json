@@ -42,7 +42,7 @@
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "@kubernetes/client-node": "1.0.0-rc7",
-    "koa": "2.15.4",
+    "koa": "2.16.1",
     "@babel/runtime-corejs3": "7.26.10",
     "@babel/runtime": "7.26.10",
     "@babel/helpers": "7.26.10",
