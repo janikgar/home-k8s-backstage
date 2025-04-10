@@ -124,7 +124,7 @@ catalog:
           repository: home-k8s
       scaffolderProvider:
         organization: 'janikgar'
-        catalogPath: '/scaffold.yaml'
+        catalogPath: '/static/*.yaml'
         schedule:
           frequency:
             minutes: 30
