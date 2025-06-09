@@ -45,8 +45,7 @@
     "@babel/runtime": "7.26.10",
     "@babel/helpers": "7.26.10",
     "prismjs": "1.30.0",
-    "xml-crypto": "6.0.1",
-    "tar-fs": "2.1.2"
+    "xml-crypto": "6.0.1"
   },
   "prettier": "@backstage/cli/config/prettier",
   "lint-staged": {
