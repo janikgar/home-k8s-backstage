@@ -59,7 +59,7 @@ const app = createApp({
     });
   },
   components: {
-    SignInPage: props => <SignInPage
+    SignInPage: props => (<SignInPage
       {...props}
       auto
       providers={[
@@ -70,7 +70,7 @@ const app = createApp({
           message: 'Sign in using Authentik',
           apiRef: authentikOIDCAuthApiRef,
         }
-      ]} />,
+      ]} />),
   },
 });
 
