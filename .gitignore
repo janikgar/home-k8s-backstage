@@ -65,3 +65,9 @@ ca.crt
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+# Cache
+.cache/
+
+# Local virtualenv for Techdocs
+venv/
