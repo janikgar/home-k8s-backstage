@@ -51,8 +51,7 @@ proxy:
       # only if your argocd api has self-signed cert
       secure: false
       headers:
-        Cookie:
-          $env: ARGOCD_AUTH_TOKEN
+        Cookie: '$env=ARGOCD_AUTH_TOKEN'
     'grafana/api':
       target: https://grafana.home.lan
       headers:
@@ -82,14 +81,12 @@ auth:
     secret: ${SESSION_SECRET}
   providers:
     guest: {}
-    authentik-provider:
+    vault-provider:
       development:
-        metadataUrl: https://authentik.home.lan/application/o/backstage/.well-known/openid-configuration
-        authorizationUrl: https://authentik.home.lan/application/o/authorize/
-        tokenUrl: https://authentik.home.lan/application/o/token/
-        clientId: ${AUTHENTIK_CLIENT_ID}
-        clientSecret: ${AUTHENTIK_CLIENT_SECRET}
-        prompt: consent
+        metadataUrl: https://vault.home.lan/v1/identity/oidc/provider/default/.well-known/openid-configuration
+        clientId: ${VAULT_CLIENT_ID}
+        clientSecret: ${VAULT_CLIENT_SECRET}
+        prompt: auto
         signIn:
           resolvers:
             - resolver: mySignInResolver
@@ -101,6 +98,7 @@ scaffolder:
   defaultCommitMessage: Created by Backstage
 
 catalog:
+  useUrlReadersSearch: true
   import:
     entityFilename: catalog-info.yaml
     pullRequestBranchName: backstage-integration

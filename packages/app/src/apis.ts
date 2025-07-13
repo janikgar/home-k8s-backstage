@@ -18,10 +18,10 @@ import {
 } from '@backstage/core-plugin-api';
 import { OAuth2 } from '@backstage/core-app-api';
 
-export const authentikOIDCAuthApiRef: ApiRef<
+export const vaultOIDCAuthApiRef: ApiRef<
   OpenIdConnectApi & ProfileInfoApi & BackstageIdentityApi & SessionApi
 > = createApiRef({
-  id: 'auth.authentik-provider'
+  id: 'auth.vault-provider'
 });
 
 export const apis: AnyApiFactory[] = [
@@ -32,7 +32,7 @@ export const apis: AnyApiFactory[] = [
   }),
   ScmAuth.createDefaultApiFactory(),
   createApiFactory({
-    api: authentikOIDCAuthApiRef,
+    api: vaultOIDCAuthApiRef,
     deps: {
       discoveryApi: discoveryApiRef,
       oauthRequestApi: oauthRequestApiRef,
@@ -44,12 +44,12 @@ export const apis: AnyApiFactory[] = [
         discoveryApi,
         oauthRequestApi,
         provider: {
-          id: 'authentik-provider',
-          title: 'Authentik Provider',
+          id: 'vault-provider',
+          title: 'Vault Provider',
           icon: () => null,
         },
         environment: configApi.getOptionalString('auth.environment'),
-        defaultScopes: ['openid', 'profile', 'email', ' offline_access'],
+        defaultScopes: ['openid', 'profile', 'email'],
         popupOptions: {
           size: {
             width: 800,

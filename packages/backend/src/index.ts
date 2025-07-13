@@ -25,6 +25,8 @@ export const mySignInResolver =
       return async (info, ctx) => {
         const { profile } = info;
 
+        console.log(info);
+
         if (!profile.displayName) {
           throw new Error('no display name')
         }
@@ -54,15 +56,15 @@ export const mySignInResolver =
     }
   });
 
-export const authModuleAuthentikProvider = createBackendModule({
+export const authModuleVaultProvider = createBackendModule({
   pluginId: 'auth',
-  moduleId: 'authentik-provider',
+  moduleId: 'vault-provider',
   register(reg) {
     reg.registerInit({
       deps: { providers: authProvidersExtensionPoint },
       async init({ providers }) {
         providers.registerProvider({
-          providerId: 'authentik-provider',
+          providerId: 'vault-provider',
           factory: createOAuthProviderFactory({
             authenticator: oidcAuthenticator,
             signInResolverFactories: {
@@ -76,7 +78,7 @@ export const authModuleAuthentikProvider = createBackendModule({
   },
 });
 
-backend.add(authModuleAuthentikProvider);
+backend.add(authModuleVaultProvider);
 
 // catalog plugin
 backend.add(import('@backstage/plugin-catalog-backend'));
