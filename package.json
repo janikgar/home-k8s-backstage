@@ -46,6 +46,7 @@
     "@octokit/request": "^8.0.0",
     "@octokit/plugin-paginate-rest": "^13.0.0",
     "@octokit/plugin-rest-endpoint-methods": "^16.0.0",
+    "@octokit/request-error": "^5.0.0",
     "nan": "2.22.2"
   },
   "prettier": "@backstage/cli/config/prettier",
