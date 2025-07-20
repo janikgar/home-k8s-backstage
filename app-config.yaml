@@ -98,7 +98,6 @@ scaffolder:
   defaultCommitMessage: Created by Backstage
 
 catalog:
-  useUrlReadersSearch: true
   import:
     entityFilename: catalog-info.yaml
     pullRequestBranchName: backstage-integration

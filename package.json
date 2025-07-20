@@ -1,6 +1,6 @@
 {
   "name": "root",
-  "version": "1.2.6",
+  "version": "1.2.8",
   "private": true,
   "engines": {
     "node": "22"
@@ -29,7 +29,7 @@
     ]
   },
   "devDependencies": {
-    "@backstage/cli": "^0.33.0",
+    "@backstage/cli": "^0.33.1",
     "@backstage/e2e-test-utils": "^0.1.1",
     "@playwright/test": "^1.32.3",
     "node-gyp": "^10.0.0",
@@ -47,7 +47,8 @@
     "@octokit/plugin-paginate-rest": "^13.0.0",
     "@octokit/plugin-rest-endpoint-methods": "^16.0.0",
     "@octokit/request-error": "^5.0.0",
-    "nan": "2.22.2"
+    "nan": "2.22.2",
+    "on-headers": "~1.1.0"
   },
   "prettier": "@backstage/cli/config/prettier",
   "lint-staged": {
