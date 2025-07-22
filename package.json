@@ -48,7 +48,11 @@
     "@octokit/plugin-rest-endpoint-methods": "^16.0.0",
     "@octokit/request-error": "^5.0.0",
     "nan": "2.22.2",
-    "on-headers": "~1.1.0"
+    "on-headers": "~1.1.0",
+    "multer": "~2.0.2",
+    "form-data@^2.5.0": "2.5.5",
+    "form-data@^2.3.2": "2.5.5",
+    "form-data@^4.0.3": "4.0.4"
   },
   "prettier": "@backstage/cli/config/prettier",
   "lint-staged": {
