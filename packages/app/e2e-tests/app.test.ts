@@ -16,12 +16,40 @@
 
 import { test, expect } from '@playwright/test';
 
-test('App should render the welcome page', async ({ page }) => {
-  await page.goto('/');
+test.describe('signin page', () => {
+  test('should include Guest', async ({ page }) => {
+    await page.goto('/');
 
-  const enterButton = page.getByRole('button', { name: 'Enter' });
-  await expect(enterButton).toBeVisible();
-  await enterButton.click();
+    const enterButton = page.getByRole('button', { name: 'Enter' });
+    await expect(enterButton).toBeVisible();
+  });
 
-  await expect(page.getByText('My Company Catalog')).toBeVisible();
+  test('should include Vault', async ({ page }) => {
+    await page.goto('/');
+
+    const signInButton = page.getByRole('button', { name: 'Sign In' });
+    await expect(signInButton).toBeVisible();
+  });
+});
+
+test.describe('home page', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/');
+
+    const enterButton = page.getByRole('button', { name: 'Enter' });
+    await expect(enterButton).toBeVisible();
+    await enterButton.click();
+  });
+
+  test('should render with title', async ({ page }) => {
+    await expect(page.getByText('Home-K8s Catalog')).toBeVisible();
+  });
+
+  for (let item of ['Home', 'Graph', 'Docs', 'Create...']) {
+    test('should include menu item ' + item, async ({ page }) => {
+      let sidebarItem = page.getByTestId('sidebar-root').locator('div > a > span', {hasText: item});
+      await expect(sidebarItem).toBeVisible();
+    });
+  };
+
 });
