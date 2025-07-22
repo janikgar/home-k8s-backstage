@@ -98,15 +98,8 @@ scaffolder:
   defaultCommitMessage: Created by Backstage
 
 catalog:
-  useUrlReadersSearch: true
-  import:
-    entityFilename: catalog-info.yaml
-    pullRequestBranchName: backstage-integration
   rules:
     - allow: [Component, System, API, Resource, Location, User, Group, Template]
-  locations: 
-    - type: file
-      target: ../../catalog-info.yaml
   providers:
     github:
       entityProvider:
