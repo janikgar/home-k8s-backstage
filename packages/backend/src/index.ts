@@ -25,8 +25,6 @@ export const mySignInResolver =
       return async (info, ctx) => {
         const { profile } = info;
 
-        console.log(info);
-
         if (!profile.displayName) {
           throw new Error('no display name')
         }
