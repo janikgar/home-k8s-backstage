@@ -20336,16 +20336,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"form-data@npm:^2.3.2, form-data@npm:^2.5.0":
-  version: 2.5.3
-  resolution: "form-data@npm:2.5.3"
+"form-data@npm:2.5.4":
+  version: 2.5.4
+  resolution: "form-data@npm:2.5.4"
   dependencies:
     asynckit: "npm:^0.4.0"
     combined-stream: "npm:^1.0.8"
     es-set-tostringtag: "npm:^2.1.0"
+    has-own: "npm:^1.0.1"
     mime-types: "npm:^2.1.35"
     safe-buffer: "npm:^5.2.1"
-  checksum: 10c0/48b910745d4fcd403f3d6876e33082a334e712199b8c86c4eb82f6da330a59b859943999d793856758c5ff18ca5261ced4d1062235a14543022d986bd21faa7d
+  checksum: 10c0/4256b7f0cc8709fd458b8f4c7670ce52bc6b8386b4bdfac53c9163354ef071a07cf5cb9400170870ec97dcd508b610ddf3b6852e1faaa7fd82dfe3bae4e016a5
   languageName: node
   linkType: hard
 
@@ -21222,6 +21223,13 @@ __metadata:
   version: 4.0.0
   resolution: "has-flag@npm:4.0.0"
   checksum: 10c0/2e789c61b7888d66993e14e8331449e525ef42aac53c627cc53d1c3334e768bcb6abdc4f5f0de1478a25beec6f0bd62c7549058b7ac53e924040d4f301f02fd1
+  languageName: node
+  linkType: hard
+
+"has-own@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "has-own@npm:1.0.1"
+  checksum: 10c0/2dcc9ca33a484254f59c47c2ebd8002f58ed9b0f77e4cad705371ea6cb59387168c5a076b51fc2fefdc28737df53ba5e668639d23c2eb660ddbcee6f7e13136e
   languageName: node
   linkType: hard
 
