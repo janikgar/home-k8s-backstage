@@ -53,3 +53,38 @@ test.describe('home page', () => {
   };
 
 });
+
+test.describe('doc page', () => {
+  test('should have more than one document', async({ page }) => {
+    await page.goto('/');
+
+    const enterButton = page.getByRole('button', { name: 'Enter' });
+    await expect(enterButton).toBeVisible();
+    await enterButton.click();
+
+    const docButton = page.getByText('Docs');
+    await expect(docButton).toBeVisible();
+    await docButton.click();
+
+    let owned = page.getByText('Owned', {exact: false});
+    await expect(owned).not.toContainText('Owned (0)');
+  })
+});
+
+test.describe('create page', () => {
+  test('should have at least one component', async({ page }) => {
+    await page.goto('/');
+
+    const enterButton = page.getByRole('button', { name: 'Enter' });
+    await expect(enterButton).toBeVisible();
+    await enterButton.click();
+
+    const docButton = page.getByText('Create...');
+    await expect(docButton).toBeVisible();
+    await docButton.click();
+
+    const templateCard = page.getByText('home.lan Application Template');
+    await expect(templateCard).toBeVisible();
+  })
+});
+
