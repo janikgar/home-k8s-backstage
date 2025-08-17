@@ -45,9 +45,9 @@ test.describe('home page', () => {
     await expect(page.getByText('Home-K8s Catalog')).toBeVisible();
   });
 
-  for (let item of ['Home', 'Graph', 'Docs', 'Create...']) {
-    test('should include menu item ' + item, async ({ page }) => {
-      let sidebarItem = page.getByTestId('sidebar-root').locator('div > a > span', {hasText: item});
+  for (const item of ['Home', 'Graph', 'Docs', 'Create...']) {
+    test(`should include menu item ${item}`, async ({ page }) => {
+      const sidebarItem = page.getByTestId('sidebar-root').locator('div > a > span', {hasText: item});
       await expect(sidebarItem).toBeVisible();
     });
   };
@@ -55,7 +55,7 @@ test.describe('home page', () => {
 });
 
 test.describe('doc page', () => {
-  test('should have more than one document', async({ page }) => {
+  test.beforeEach(async({ page }) => {
     await page.goto('/');
 
     const enterButton = page.getByRole('button', { name: 'Enter' });
@@ -65,10 +65,21 @@ test.describe('doc page', () => {
     const docButton = page.getByText('Docs');
     await expect(docButton).toBeVisible();
     await docButton.click();
+  });
 
-    let owned = page.getByText('Owned', {exact: false});
+  test('should have more than one document', async({ page }) => {
+    const owned = page.getByText('Owned', {exact: false});
     await expect(owned).not.toContainText('Owned (0)');
-  })
+  });
+  
+  test('should have a working document', async({ page }) => {
+    const certManager = page.locator('a').getByText('cert-manager');
+    await expect(certManager).toBeHidden();
+
+    await certManager.click();
+    const purpose = page.getByText('cert-manager manages certificate issuance and renewal inside a Kubernetes cluster');
+    await expect(purpose).toBeVisible();
+  });
 });
 
 test.describe('create page', () => {
