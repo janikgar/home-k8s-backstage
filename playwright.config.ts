@@ -36,7 +36,7 @@ export default defineConfig({
           port: 3000,
           reuseExistingServer: true,
           timeout: 60_000,
-        },
+        },      
       ],
 
   forbidOnly: !!process.env.CI,
