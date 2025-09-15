@@ -9,8 +9,14 @@ const backend = createBackend();
 
 backend.add(import('@backstage/plugin-app-backend'));
 backend.add(import('@backstage/plugin-proxy-backend'));
+
+// scaffolder plugin
 backend.add(import('@backstage/plugin-scaffolder-backend'));
-backend.add(import('@backstage/plugin-scaffolder-backend-module-github'));
+backend.add(import('@backstage/plugin-scaffolder-backend-module-github'));backend.add(
+  import('@backstage/plugin-scaffolder-backend-module-notifications'),
+);
+ 
+// techdocs plugin
 backend.add(import('@backstage/plugin-techdocs-backend'));
 
 // auth plugin
@@ -85,7 +91,12 @@ backend.add(
 );
 backend.add(import('@backstage/plugin-catalog-backend-module-github'));
 
+// kubernetes plugin
 backend.add(import('@backstage/plugin-kubernetes-backend'));
+
+// notifications and signals plugins
+backend.add(import('@backstage/plugin-notifications-backend'));
+backend.add(import('@backstage/plugin-signals-backend'));
 
 // See https://backstage.io/docs/features/software-catalog/configuration#subscribing-to-catalog-errors
 backend.add(import('@backstage/plugin-catalog-backend-module-logs'));
