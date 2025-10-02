@@ -18,7 +18,7 @@ env:
 
 jobs:
   build:
-    runs-on: arc-runner-scale-set
+    runs-on: arc-backstage
     steps:
     - uses: actions/checkout@v3
     - name: Log in to the Container registry
