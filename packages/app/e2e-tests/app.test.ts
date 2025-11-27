@@ -73,6 +73,9 @@ test.describe('doc page', () => {
   });
   
   test('should have a working document', async({ page }) => {
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    await page.reload();
+
     const certManager = page.locator('a').getByText('cert-manager');
     await expect(certManager).toBeHidden();
 
