@@ -22660,7 +22660,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jwa@npm:^1.4.2":
+"jwa@npm:~1.4.2":
   version: 1.4.2
   resolution: "jwa@npm:1.4.2"
   dependencies:
@@ -22671,7 +22671,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jws@npm:~3.2":
+"jws@npm:~3.2.3":
   version: 3.2.3
   resolution: "jws@npm:3.2.3"
   dependencies:
