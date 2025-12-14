@@ -22671,7 +22671,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jws@npm:~3.2":
+"jws@npm:~3.2.3":
   version: 3.2.3
   resolution: "jws@npm:3.2.3"
   dependencies:
