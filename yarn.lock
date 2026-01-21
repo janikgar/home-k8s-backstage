@@ -1787,8 +1787,8 @@ __metadata:
   linkType: hard
 
 "@backstage/backend-defaults@npm:^0.14.0":
-  version: 0.14.0
-  resolution: "@backstage/backend-defaults@npm:0.14.0"
+  version: 0.14.1
+  resolution: "@backstage/backend-defaults@npm:0.14.1"
   dependencies:
     "@aws-sdk/abort-controller": "npm:^3.347.0"
     "@aws-sdk/client-codecommit": "npm:^3.350.0"
@@ -1803,7 +1803,7 @@ __metadata:
     "@backstage/config": "npm:^1.3.6"
     "@backstage/config-loader": "npm:^1.10.7"
     "@backstage/errors": "npm:^1.2.7"
-    "@backstage/integration": "npm:^1.19.0"
+    "@backstage/integration": "npm:^1.19.1"
     "@backstage/integration-aws-node": "npm:^0.1.19"
     "@backstage/plugin-auth-node": "npm:^0.6.10"
     "@backstage/plugin-events-node": "npm:^0.4.18"
@@ -1868,7 +1868,7 @@ __metadata:
       optional: true
     better-sqlite3:
       optional: true
-  checksum: 10c0/32f81eb7fa7d42291a74512b09aa7dc281734274d9d47d7a657fd30f850dc7b5eaf859f2125d4755fc0fe735e99d5d7b6bbc5027b9c35fca56b1c2b6003e0785
+  checksum: 10c0/bfe9c9218508aa9447a5880cb1cfac4735bf912aab48ec8134b4cf7bfd3f04b7b9022871554a7f7f187068f51fb9e7113e9b5df849826ba41c3077004e058a07
   languageName: node
   linkType: hard
 
@@ -2467,6 +2467,24 @@ __metadata:
     lodash: "npm:^4.17.21"
     luxon: "npm:^3.0.0"
   checksum: 10c0/443cbc9834b33302fc7e5175e68da8241af3b19dccb59c408cadd214a2ebbd03d1079dbd662f13a7edd7f9c4df156d1194321a9e5d66ab0c1dcd5b08f1f49614
+  languageName: node
+  linkType: hard
+
+"@backstage/integration@npm:^1.19.1":
+  version: 1.19.2
+  resolution: "@backstage/integration@npm:1.19.2"
+  dependencies:
+    "@azure/identity": "npm:^4.0.0"
+    "@azure/storage-blob": "npm:^12.5.0"
+    "@backstage/config": "npm:^1.3.6"
+    "@backstage/errors": "npm:^1.2.7"
+    "@octokit/auth-app": "npm:^4.0.0"
+    "@octokit/rest": "npm:^19.0.3"
+    cross-fetch: "npm:^4.0.0"
+    git-url-parse: "npm:^15.0.0"
+    lodash: "npm:^4.17.21"
+    luxon: "npm:^3.0.0"
+  checksum: 10c0/10c99c848368d6745dd38e906aaba1d5082aa35d53ef814ab97cf0a919f6a8be33e140dc7ee6365411d950e38b71913e8c008c1064ed4e5db9f01a004c8c6295
   languageName: node
   linkType: hard
 
