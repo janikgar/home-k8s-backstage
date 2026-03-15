@@ -40,7 +40,7 @@
     "prettier": "^2.3.2",
     "typescript": "~5.4.0"
   },
-  "resolutions": {
+  "_resolutions": {
     "@backstage/app-defaults/@backstage/core-app-api": "~1.19.5",
     "@backstage/cli-common": "~0.1.17",
     "@backstage/integration": "~1.20.1",
