@@ -92,15 +92,22 @@ function prettyPrintResults(parsedResults: Map<string, Package>) {
     }
 }
 
-function doPatches(parsedResults: Map<string, Package>) {
-    console.log("===== Beginning updates =====")
+function doPatches(parsedResults: Map<string, Package>, stage?: string) {
+    console.log(`===== Beginning ${stage + " "}updates =====`)
     prettyPrintResults(parsedResults);
     try {
         for (let [pkgName, contents] of parsedResults) {
             attemptUpdate(pkgName, contents.closestCandidate);
         }
+
+        console.log("--- Running yarn install");
         let yarnOutput = runCommand("yarn install");
         console.log(yarnOutput);
+
+        console.log("--- Running integration tests");
+        let e2eOutput = runCommand("yarn run test:e2e");
+        console.log(e2eOutput);
+
     } catch(reason) {
         console.log(`error: ${reason}`)
     }
@@ -128,7 +135,7 @@ function getPatchStages(parsedResults: Map<string, Package>): Array<Map<string, 
 
 function runPatchStages(changeStages: Array<Map<string, Package>>){
     // batch all patch-level changes together
-    doPatches(changeStages[0]);
+    doPatches(changeStages[0], "patch");
 }
 
 function attemptUpdate(pkgName: string, version: string) {
