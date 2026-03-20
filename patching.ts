@@ -1,5 +1,5 @@
 import {execSync} from "node:child_process"
-import * as fs from "node:fs/promises"
+import * as fs from "node:fs"
 import * as semver from "semver"
 
 const DOCKER_BINARY = "podman"
@@ -59,24 +59,9 @@ function runCommand(command: string): string {
     }
 }
 
-async function readTrivyResults(fileName: string): Promise<object> {
-    let resultFile = {};
-    let fileHandle: fs.FileHandle;
-
-    return new Promise((resolve, reject) => {
-        fs.open(fileName).then((handle) => {
-            fileHandle = handle;
-        }).then(() => {
-            return fileHandle.readFile({encoding: "utf-8"})
-        }).then((fileContents) => {
-            resultFile = JSON.parse(fileContents)
-            resolve(resultFile)
-        }).catch((error) => {
-            reject(error)
-        }).finally(() => {
-            fileHandle.close()
-        })
-    })
+function readTrivyResults(fileName: string): object {
+    let resultContent = fs.readFileSync(fileName).toString();
+    return JSON.parse(resultContent);
 }
 
 function parseTrivyResults(results: any): Map<string, Package> {
@@ -99,7 +84,6 @@ function parseTrivyResults(results: any): Map<string, Package> {
 }
 
 function prettyPrintResults(parsedResults: Map<string, Package>) {
-    console.log(parsedResults);
     for (let [pkgName, pkgList] of parsedResults) {
         let curVer = pkgList.currentVersion;
         let bestCandidate = pkgList.closestCandidate;
@@ -108,47 +92,64 @@ function prettyPrintResults(parsedResults: Map<string, Package>) {
     }
 }
 
-function patchStuff(parsedResults: Map<string, Package>) {
-    for (let [pkgName, contents] of parsedResults) {
-        attemptUpdate(pkgName, contents.closestCandidate)
+function doPatches(parsedResults: Map<string, Package>) {
+    console.log("===== Beginning updates =====")
+    prettyPrintResults(parsedResults);
+    try {
+        for (let [pkgName, contents] of parsedResults) {
+            attemptUpdate(pkgName, contents.closestCandidate);
+        }
+        let yarnOutput = runCommand("yarn install");
+        console.log(yarnOutput);
+    } catch(reason) {
+        console.log(`error: ${reason}`)
     }
 }
 
+function getPatchStages(parsedResults: Map<string, Package>): Array<Map<string, Package>> {
+    let smallChanges = new Map<string, Package>();
+    let mediumChanges = new Map<string, Package>();
+    let largeChanges = new Map<string, Package>();
+
+    parsedResults.forEach((pkgDetails, pkgName) => {
+        switch (pkgDetails.closestCandidateDiff) {
+            case "patch":
+                smallChanges.set(pkgName, pkgDetails);
+                break;
+            case "minor":
+                mediumChanges.set(pkgName, pkgDetails);
+            default:
+                largeChanges.set(pkgName, pkgDetails);
+        }
+    });
+
+    return [smallChanges, mediumChanges, largeChanges]
+}
+
+function runPatchStages(changeStages: Array<Map<string, Package>>){
+    // batch all patch-level changes together
+    doPatches(changeStages[0]);
+}
+
 function attemptUpdate(pkgName: string, version: string) {
-    let fileHandle: fs.FileHandle;
-    let pkgJson: any;
+    let pkgContents = fs.readFileSync("./package.json").toString();
+    let pkgJSON = JSON.parse(pkgContents);
+    pkgJSON['resolutions'][pkgName] = version;
 
-    fs.open("./package.json", fs.constants.O_RDWR).then((handle) => {
-        fileHandle = handle;
-    }).then(() => {
-        return fileHandle.readFile({encoding: "utf-8"});
-    }).then((contents) => {
-        pkgJson = JSON.parse(contents);
-        pkgJson['resolutions'][pkgName] = `~${version}`;
-
-        fileHandle.writeFile(JSON.stringify(pkgJson));
-    }).catch((reason) => {
-        console.log(reason);
-    }).finally(() => {
-        fileHandle.close();
-    })
-
-    // runCommand(`yarn install`)
+    let outputContents = JSON.stringify(pkgJSON, undefined, 2);
+    fs.writeFileSync("./package.json", outputContents);
 }
 
 runCommand(`${TRIVY_COMMAND} --download-db-only`);
 
 const scanOutput = runCommand(`${TRIVY_COMMAND} --skip-db-update -f json -o /repo/vulns.json --ignore-unfixed --scanners vuln . `);
-
 console.log(scanOutput);
 
 console.log("reading result");
-let results = await readTrivyResults("./vulns.json");
+let results = readTrivyResults("./vulns.json");
 
 console.log("parsing result");
 let parsedResults = parseTrivyResults(results);
 
-console.log("pretty printing result");
-prettyPrintResults(parsedResults);
-
-patchStuff(parsedResults);
+let changeStages = getPatchStages(parsedResults);
+runPatchStages(changeStages);
