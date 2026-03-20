@@ -32,6 +32,12 @@ class Package {
             patchSet.add(patchCandidate);
         }
         this.patchCandidates = new Array(...patchSet).sort();
+        this.patchCandidates = this.patchCandidates.map((val) => {
+            if (semver.gt(val, this.currentVersion)) {
+                return val
+            }
+        }) as string[];
+
         this.closestCandidate = this.patchCandidates[0];
         this.closestCandidateDiff = semver.diff(this.currentVersion, this.closestCandidate)!;
     }
@@ -125,6 +131,7 @@ function getPatchStages(parsedResults: Map<string, Package>): Array<Map<string, 
                 break;
             case "minor":
                 mediumChanges.set(pkgName, pkgDetails);
+                break;
             default:
                 largeChanges.set(pkgName, pkgDetails);
         }
@@ -147,14 +154,14 @@ function attemptUpdate(pkgName: string, version: string) {
     fs.writeFileSync("./package.json", outputContents);
 }
 
+console.log("===== Updating Trivy DB =====");
 runCommand(`${TRIVY_COMMAND} --download-db-only`);
 
+console.log("===== Scanning with Trivy =====");
 const scanOutput = runCommand(`${TRIVY_COMMAND} --skip-db-update -f json -o /repo/vulns.json --ignore-unfixed --scanners vuln . `);
 console.log(scanOutput);
 
-console.log("reading result");
 let results = readTrivyResults("./vulns.json");
-
 console.log("parsing result");
 let parsedResults = parseTrivyResults(results);
 
