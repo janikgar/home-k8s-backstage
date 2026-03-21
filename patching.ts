@@ -156,23 +156,23 @@ function runPatchStages(changeStages: Map<string, Package>[]){
     }
 
     console.log("===== Deduping yarn packages =====");
-    let dedupeOutput = execSync("yarn dedupe");
+    let dedupeOutput = execSync("yarn dedupe", {encoding: "utf-8"});
     console.log(dedupeOutput);
 
     console.log("===== Bumping version =====");
-    let bumpOutput = execSync("yarn version patch");
+    let bumpOutput = execSync("yarn version patch", {encoding: "utf-8"});
     console.log(bumpOutput);
 
     console.log("===== Creating new branch =====");
-    let versionOutput = execSync("jq -r .version package.json");
+    let versionOutput = execSync("jq -r .version package.json", {encoding: "utf-8"});
     console.log(versionOutput);
 
     console.log("===== Staging changes =====");
-    let stageOutput = execSync(`git checkout -b backstage-${versionOutput}`);
+    let stageOutput = execSync(`git checkout -b backstage-${versionOutput}`, {encoding: "utf-8"});
     console.log(stageOutput);
-    let commitOutput = execSync("git commit -a -m 'automated patches'");
+    let commitOutput = execSync("git commit -a -m 'automated patches'", {encoding: "utf-8"});
     console.log(commitOutput);
-    let pushOutput = execSync("git push");
+    let pushOutput = execSync("git push", {encoding: "utf-8"});
     console.log(pushOutput);
 }
 
