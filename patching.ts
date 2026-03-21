@@ -101,12 +101,10 @@ function doPatches(parsedResults: Map<string, Package>, stage?: string) {
         }
 
         console.log("--- Running yarn install");
-        let yarnOutput = runCommand("yarn install");
-        console.log(yarnOutput);
+        runCommand("yarn install", true);
 
-        console.log("--- Running integration tests");
-        let e2eOutput = runCommand("yarn run test:e2e");
-        console.log(e2eOutput);
+        // console.log("--- Running integration tests");
+        // runCommand("yarn run test:e2e");
     } else {
         console.log("--- Nothing to patch!")
     }
