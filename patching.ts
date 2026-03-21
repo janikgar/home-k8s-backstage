@@ -144,16 +144,14 @@ function runPatchStages(changeStages: Map<string, Package>[]){
     }
 
     console.log("===== Deduping yarn packages =====");
-    let dedupeOutput = execSync("yarn dedupe", {encoding: "utf-8"});
-    console.log(dedupeOutput);
+    runCommand("yarn dedupe", true);
 
     console.log("===== Bumping version =====");
-    let bumpOutput = execSync("yarn version patch", {encoding: "utf-8"});
-    console.log(bumpOutput);
+    runCommand("yarn version patch", true);
 
-    let currentBranch = runCommand("git rev-parse --abbrev-ref HEAD");
+    let currentBranch = runCommand("git rev-parse --abbrev-ref HEAD", true);
     
-    if (currentBranch !== "main") {
+    if (currentBranch === "main") {
         console.log("===== Creating new branch =====");
         let versionOutput = runCommand("jq -r .version package.json", true);
         let sanitizedVersion = semver.parse(versionOutput);
