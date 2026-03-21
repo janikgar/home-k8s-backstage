@@ -5,20 +5,6 @@ import * as semver from "semver"
 const DOCKER_BINARY = "podman"
 const TRIVY_COMMAND = `${DOCKER_BINARY} run -v trivy:/cache -v $PWD:/repo aquasec/trivy repository --cache-dir /cache`
 
-class ExecSyncReturns<T> {
-    pid!: number;
-    output!: Array<T | null>;
-    stdout!: T;
-    stderr!: T;
-    status!: number | null;
-    signal!: NodeJS.Signals | null;
-    error?: Error;
-
-    constructor(stdout: T) {
-        this.stdout = stdout;
-    }
-}
-
 class Package {
     packageName: string;
     packageVersion: semver.SemVer;
@@ -60,15 +46,17 @@ class Package {
 }
 
 // Run a command line command and return the output
-function runCommand(command: string): string {
+function runCommand(command: string, logOutput?: boolean): string {
+    let output = "";
     try {
-        const output = execSync(command, { encoding: "utf-8" });
-        let outputAsSyncOutput: ExecSyncReturns<string> = JSON.parse(output);
-        return outputAsSyncOutput.stdout;
+        output = execSync(command, { encoding: "utf-8" });
     } catch (errorOutput: any) {
-        let errorOutputAsSyncOutput: ExecSyncReturns<string> = errorOutput;
-        return errorOutputAsSyncOutput.stdout;
+        throw(errorOutput);
     }
+    if (logOutput) {
+        console.log(logOutput);
+    }
+    return output
 }
 
 function readTrivyResults(fileName: string): object {
@@ -163,17 +151,17 @@ function runPatchStages(changeStages: Map<string, Package>[]){
     let bumpOutput = execSync("yarn version patch", {encoding: "utf-8"});
     console.log(bumpOutput);
 
-    console.log("===== Creating new branch =====");
-    let versionOutput = execSync("jq -r .version package.json", {encoding: "utf-8"});
-    console.log(versionOutput);
-
+    let currentBranch = runCommand("git rev-parse --abbrev-ref HEAD");
+    
+    if (currentBranch !== "main") {
+        console.log("===== Creating new branch =====");
+        let versionOutput = runCommand("jq -r .version package.json", true);
+        let sanitizedVersion = semver.parse(versionOutput);
+        runCommand(`git checkout -b backstage-${sanitizedVersion}`, true);
+    }
     console.log("===== Staging changes =====");
-    let stageOutput = execSync(`git checkout -b backstage-${versionOutput}`, {encoding: "utf-8"});
-    console.log(stageOutput);
-    let commitOutput = execSync("git commit -a -m 'automated patches'", {encoding: "utf-8"});
-    console.log(commitOutput);
-    let pushOutput = execSync("git push", {encoding: "utf-8"});
-    console.log(pushOutput);
+    runCommand("git commit -a -m 'automated patches'", true);
+    runCommand("git push", true);
 }
 
 function attemptUpdate(pkgName: string, version: semver.SemVer) {
