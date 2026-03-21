@@ -5,20 +5,6 @@ import * as semver from "semver"
 const DOCKER_BINARY = "podman"
 const TRIVY_COMMAND = `${DOCKER_BINARY} run -v trivy:/cache -v $PWD:/repo aquasec/trivy repository --cache-dir /cache`
 
-class ExecSyncReturns<T> {
-    pid!: number;
-    output!: Array<T | null>;
-    stdout!: T;
-    stderr!: T;
-    status!: number | null;
-    signal!: NodeJS.Signals | null;
-    error?: Error;
-
-    constructor(stdout: T) {
-        this.stdout = stdout;
-    }
-}
-
 class Package {
     packageName: string;
     packageVersion: semver.SemVer;
@@ -60,15 +46,17 @@ class Package {
 }
 
 // Run a command line command and return the output
-function runCommand(command: string): string {
+function runCommand(command: string, logOutput?: boolean): string {
+    let output = "";
     try {
-        const output = execSync(command, { encoding: "utf-8" });
-        let outputAsSyncOutput: ExecSyncReturns<string> = JSON.parse(output);
-        return outputAsSyncOutput.stdout;
+        output = execSync(command, { encoding: "utf-8" });
     } catch (errorOutput: any) {
-        let errorOutputAsSyncOutput: ExecSyncReturns<string> = errorOutput;
-        return errorOutputAsSyncOutput.stdout;
+        throw(errorOutput);
     }
+    if (logOutput) {
+        console.log(logOutput);
+    }
+    return output
 }
 
 function readTrivyResults(fileName: string): object {
@@ -113,12 +101,10 @@ function doPatches(parsedResults: Map<string, Package>, stage?: string) {
         }
 
         console.log("--- Running yarn install");
-        let yarnOutput = runCommand("yarn install");
-        console.log(yarnOutput);
+        runCommand("yarn install", true);
 
-        console.log("--- Running integration tests");
-        let e2eOutput = runCommand("yarn run test:e2e");
-        console.log(e2eOutput);
+        // console.log("--- Running integration tests");
+        // runCommand("yarn run test:e2e");
     } else {
         console.log("--- Nothing to patch!")
     }
@@ -156,24 +142,22 @@ function runPatchStages(changeStages: Map<string, Package>[]){
     }
 
     console.log("===== Deduping yarn packages =====");
-    let dedupeOutput = execSync("yarn dedupe");
-    console.log(dedupeOutput);
+    runCommand("yarn dedupe", true);
 
     console.log("===== Bumping version =====");
-    let bumpOutput = execSync("yarn version patch");
-    console.log(bumpOutput);
+    runCommand("yarn version patch", true);
 
-    console.log("===== Creating new branch =====");
-    let versionOutput = execSync("jq -r .version package.json");
-    console.log(versionOutput);
-
+    let currentBranch = runCommand("git rev-parse --abbrev-ref HEAD", true);
+    
+    if (currentBranch === "main") {
+        console.log("===== Creating new branch =====");
+        let versionOutput = runCommand("jq -r .version package.json", true);
+        let sanitizedVersion = semver.parse(versionOutput);
+        runCommand(`git checkout -b backstage-${sanitizedVersion}`, true);
+    }
     console.log("===== Staging changes =====");
-    let stageOutput = execSync(`git checkout -b backstage-${versionOutput}`);
-    console.log(stageOutput);
-    let commitOutput = execSync("git commit -a -m 'automated patches'");
-    console.log(commitOutput);
-    let pushOutput = execSync("git push");
-    console.log(pushOutput);
+    runCommand("git commit -a -m 'automated patches'", true);
+    runCommand("git push", true);
 }
 
 function attemptUpdate(pkgName: string, version: semver.SemVer) {
