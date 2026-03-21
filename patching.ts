@@ -1,21 +1,24 @@
 import {exec, execSync} from "node:child_process"
 import * as fs from "node:fs"
+import { exit } from "node:process"
 import * as semver from "semver"
 
 const DOCKER_BINARY = "podman"
 const TRIVY_COMMAND = `${DOCKER_BINARY} run -v trivy:/cache -v $PWD:/repo aquasec/trivy repository --cache-dir /cache`
+const PACKAGE_PATTERN = /(?<pkgName>.*)\@(?<version>.*)/g
 
 class Package {
     packageName: string;
+    shortPackageName: string;
     packageVersion: semver.SemVer;
     patchCandidates: semver.SemVer[];
     closestCandidate: semver.SemVer;
     closestCandidateDiff: semver.ReleaseType;
 
-    constructor(currentPackage: string, patchCandidates: string[]){
-        let pkgVersionString: string;
-        [this.packageName, pkgVersionString] = currentPackage.split("@");
-        this.packageVersion = semver.parse(pkgVersionString)!;
+    constructor(fullPackageName: string, shortPackageName: string, currentPackage: string, patchCandidates: string[]){
+        this.packageName = fullPackageName;
+        this.shortPackageName = shortPackageName;
+        this.packageVersion = semver.parse(currentPackage)!;
 
         let patchSet = new Set<semver.SemVer>();
         for (let patchCandidate of patchCandidates) {
@@ -27,11 +30,9 @@ class Package {
             return semver.lt(currentPackage, v)
         }).sort();
 
-        console.log(diffedCandidates);
-
         this.patchCandidates = diffedCandidates;
         this.closestCandidate = this.patchCandidates[0];
-        this.closestCandidateDiff = semver.diff(this.packageName, this.closestCandidate)!;
+        this.closestCandidateDiff = semver.diff(this.packageVersion, this.closestCandidate)!;
     }
 
     /**
@@ -76,7 +77,7 @@ function parseTrivyResults(results: any): Map<string, Package> {
         if (importantResults.has(result['PkgID'])) {
             importantResults.get(result['PkgID'])?.merge(currentVersion, fixedVersions);
         } else {
-            let newPackage = new Package(currentVersion, fixedVersions);
+            let newPackage = new Package(result['PkgID'], result['PkgName'], currentVersion, fixedVersions);
             importantResults.set(result['PkgID'], newPackage);
         }
     }
@@ -96,8 +97,8 @@ function doPatches(parsedResults: Map<string, Package>, stage?: string) {
     console.log(`===== Beginning ${stage + " "}updates =====`)
     prettyPrintResults(parsedResults);
     if (parsedResults.size > 0) {
-        for (let [pkgName, contents] of parsedResults) {
-            attemptUpdate(pkgName, contents.closestCandidate);
+        for (let [_, contents] of parsedResults) {
+            attemptUpdate(contents);
         }
 
         console.log("--- Running yarn install");
@@ -160,21 +161,27 @@ function runPatchStages(changeStages: Map<string, Package>[]){
     runCommand("git push", true);
 }
 
-function attemptUpdate(pkgName: string, version: semver.SemVer) {
+function attemptUpdate(pkg: Package) {
     let pkgContents = fs.readFileSync("./package.json").toString();
     let pkgJSON = JSON.parse(pkgContents);
-    pkgJSON['resolutions'][pkgName] = `~${version.toString()}`;
+    // pkgJSON['resolutions'][pkg.packageName] = `~${pkg.closestCandidate.toString()}`;
 
     let outputContents = JSON.stringify(pkgJSON, undefined, 2);
     fs.writeFileSync("./package.json", outputContents);
+
+    let yarnWhyOutput = runCommand(`yarn why ${pkg.shortPackageName} --json`, true);
+    yarnWhyOutput.split("\n").slice(0, -1).map((line) => {
+        let lineJSON = JSON.parse(line);
+        console.log(lineJSON['children']);
+    });
+
 }
 
 console.log("===== Updating Trivy DB =====");
 runCommand(`${TRIVY_COMMAND} --download-db-only`);
 
 console.log("===== Scanning with Trivy =====");
-const scanOutput = runCommand(`${TRIVY_COMMAND} --skip-db-update -f json -o /repo/vulns.json --ignore-unfixed --scanners vuln . `);
-console.log(scanOutput);
+runCommand(`${TRIVY_COMMAND} --skip-db-update -f json -o /repo/vulns.json --ignore-unfixed --scanners vuln . `);
 
 let results = readTrivyResults("./vulns.json");
 let parsedResults = parseTrivyResults(results);
