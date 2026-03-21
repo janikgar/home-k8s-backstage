@@ -71,3 +71,5 @@ ca.crt
 
 # Local virtualenv for Techdocs
 venv/
+
+vulns.json
