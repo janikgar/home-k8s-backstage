@@ -5,7 +5,7 @@ import { isMapIterator } from "node:util/types"
 import * as semver from "semver"
 
 const DOCKER_BINARY = "podman"
-const TRIVY_COMMAND = `${DOCKER_BINARY} run -v trivy:/cache -v $PWD:/repo aquasec/trivy repository --cache-dir /cache`
+const TRIVY_COMMAND = `${DOCKER_BINARY} run -v trivy:/cache -v $PWD:/repo aquasec/trivy:0.69.3 repository --cache-dir /cache`
 const PACKAGE_PATTERN = /(?<pkgName>.*)\@(?<version>.*)/g
 
 class Package {
@@ -56,7 +56,7 @@ function runCommand(command: string, logOutput?: boolean): string {
         throw(errorOutput);
     }
     if (logOutput) {
-        console.log(logOutput);
+        console.log(output);
     }
     return output
 }
@@ -105,8 +105,8 @@ function doPatches(parsedResults: Map<string, Package>, stage?: string) {
         console.log("--- Running yarn install");
         runCommand("yarn install", true);
 
-        // console.log("--- Running integration tests");
-        // runCommand("yarn run test:e2e");
+        console.log("--- Running integration tests");
+        runCommand("yarn run test:e2e");
     } else {
         console.log("--- Nothing to patch!")
     }
@@ -178,11 +178,11 @@ function attemptUpdate(pkg: Package) {
     fs.writeFileSync("./package.json", outputContents);
 }
 
-// console.log("===== Updating Trivy DB =====");
-// runCommand(`${TRIVY_COMMAND} --download-db-only`);
+console.log("===== Updating Trivy DB =====");
+runCommand(`${TRIVY_COMMAND} --download-db-only`);
 
-// console.log("===== Scanning with Trivy =====");
-// runCommand(`${TRIVY_COMMAND} --skip-db-update -f json -o /repo/vulns.json --ignore-unfixed --scanners vuln . `);
+console.log("===== Scanning with Trivy =====");
+runCommand(`${TRIVY_COMMAND} --skip-db-update -f json -o /repo/vulns.json --ignore-unfixed --scanners vuln . `);
 
 let results = readTrivyResults("./vulns.json");
 let parsedResults = parseTrivyResults(results);
