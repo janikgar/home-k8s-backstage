@@ -1,6 +1,7 @@
 import {exec, execSync} from "node:child_process"
 import * as fs from "node:fs"
 import { exit } from "node:process"
+import { isMapIterator } from "node:util/types"
 import * as semver from "semver"
 
 const DOCKER_BINARY = "podman"
@@ -166,22 +167,22 @@ function attemptUpdate(pkg: Package) {
     let pkgJSON = JSON.parse(pkgContents);
     // pkgJSON['resolutions'][pkg.packageName] = `~${pkg.closestCandidate.toString()}`;
 
-    let outputContents = JSON.stringify(pkgJSON, undefined, 2);
-    fs.writeFileSync("./package.json", outputContents);
-
     let yarnWhyOutput = runCommand(`yarn why ${pkg.shortPackageName} --json`, true);
     yarnWhyOutput.split("\n").slice(0, -1).map((line) => {
         let lineJSON = JSON.parse(line);
-        console.log(lineJSON['children']);
+        let innerContent = Object.entries<any>(lineJSON.children)[0][1];
+        pkgJSON['resolutions'][innerContent.descriptor] = `~${pkg.closestCandidate.toString()}`;
     });
 
+    let outputContents = JSON.stringify(pkgJSON, undefined, 2);
+    fs.writeFileSync("./package.json", outputContents);
 }
 
-console.log("===== Updating Trivy DB =====");
-runCommand(`${TRIVY_COMMAND} --download-db-only`);
+// console.log("===== Updating Trivy DB =====");
+// runCommand(`${TRIVY_COMMAND} --download-db-only`);
 
-console.log("===== Scanning with Trivy =====");
-runCommand(`${TRIVY_COMMAND} --skip-db-update -f json -o /repo/vulns.json --ignore-unfixed --scanners vuln . `);
+// console.log("===== Scanning with Trivy =====");
+// runCommand(`${TRIVY_COMMAND} --skip-db-update -f json -o /repo/vulns.json --ignore-unfixed --scanners vuln . `);
 
 let results = readTrivyResults("./vulns.json");
 let parsedResults = parseTrivyResults(results);
