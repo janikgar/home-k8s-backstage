@@ -1,6 +1,6 @@
 {
   "name": "root",
-  "version": "1.3.23",
+  "version": "1.3.24",
   "private": true,
   "engines": {
     "node": "22"
@@ -103,7 +103,8 @@
     "tar@npm:^7.4.3": "~7.5.3",
     "tar@npm:^6.2.1": "~7.5.3",
     "undici@npm:^7.2.3": "~6.24.0",
-    "undici@npm:^5.28.2": "~6.24.0"
+    "undici@npm:^5.28.2": "~6.24.0",
+    "dompurify@npm:~3.2.7": "~3.3.2"
   },
   "prettier": "@backstage/cli/config/prettier",
   "lint-staged": {

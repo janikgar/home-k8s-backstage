@@ -1,7 +1,5 @@
-import {exec, execSync} from "node:child_process"
+import {execSync} from "node:child_process"
 import * as fs from "node:fs"
-import { exit } from "node:process"
-import { isMapIterator } from "node:util/types"
 import * as semver from "semver"
 
 const DOCKER_BINARY = "podman"
