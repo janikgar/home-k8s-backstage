@@ -171,8 +171,8 @@ function runPatchStages(changeStages: Map<string, Package>[]){
 
     findTransitiveResolutions();
 
-    // console.log("===== Deduping yarn packages =====");
-    // runCommand("yarn dedupe", true);
+    console.log("===== Deduping yarn packages =====");
+    runCommand("yarn dedupe", true);
 
     // console.log("===== Bumping version =====");
     // runCommand("yarn version patch", true);
@@ -194,7 +194,7 @@ function cleanResolutions() {
     let pkgContents = fs.readFileSync("./package.json").toString();
     let pkgJSON = JSON.parse(pkgContents);
 
-    pkgJSON['resolutions'] = pkgJSON['persistentResolutions'];
+    // pkgJSON['resolutions'] = pkgJSON['persistentResolutions'];
 
     let outputContents = JSON.stringify(pkgJSON, undefined, 2);
     fs.writeFileSync("./package.json", outputContents);
@@ -215,16 +215,16 @@ function attemptUpdate(pkg: Package) {
     fs.writeFileSync("./package.json", outputContents);
 }
 
-// console.log("===== Updating Trivy DB =====");
-// runCommand(`${TRIVY_COMMAND} --download-db-only`);
+console.log("===== Updating Trivy DB =====");
+runCommand(`${TRIVY_COMMAND} --download-db-only`);
 
-// console.log("===== Scanning with Trivy =====");
-// runCommand(`${TRIVY_COMMAND} --skip-db-update -f json -o /repo/vulns.json --ignore-unfixed --scanners vuln . `);
+console.log("===== Scanning with Trivy =====");
+runCommand(`${TRIVY_COMMAND} --skip-db-update -f json -o /repo/vulns.json --ignore-unfixed --scanners vuln . `);
 
-// let results = readTrivyResults("./vulns.json");
-// let parsedResults = parseTrivyResults(results);
+let results = readTrivyResults("./vulns.json");
+let parsedResults = parseTrivyResults(results);
 
-// let changeStages = getPatchStages(parsedResults);
-// runPatchStages(changeStages);
+let changeStages = getPatchStages(parsedResults);
+runPatchStages(changeStages);
 
 findTransitiveResolutions();

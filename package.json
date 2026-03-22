@@ -51,9 +51,9 @@
   },
   "resolutions": {
     "@backstage/app-defaults/@backstage/core-app-api": "~1.19.5",
-    "dompurify@npm:^3.2.4": "~3.2.7",
-    "dompurify@npm:^3.2.6": "~3.2.7",
-    "dompurify@npm:=3.2.6": "~3.2.7",
+    "dompurify@npm:^3.2.4": "~3.3.2",
+    "dompurify@npm:^3.2.6": "~3.3.2",
+    "dompurify@npm:=3.2.6": "~3.3.2",
     "js-yaml@npm:^4.1.0": "~4.1.1",
     "js-yaml@npm:^4.0.0": "~4.1.1",
     "js-yaml@npm:^3.13.1": "~4.1.1",
@@ -106,7 +106,8 @@
     "tar@npm:^7.4.3": "~7.5.3",
     "tar@npm:^6.2.1": "~7.5.3",
     "undici@npm:^7.2.3": "~6.24.0",
-    "undici@npm:^5.28.2": "~6.24.0"
+    "undici@npm:^5.28.2": "~6.24.0",
+    "dompurify@npm:~3.2.7": "~3.3.2"
   },
   "prettier": "@backstage/cli/config/prettier",
   "lint-staged": {
