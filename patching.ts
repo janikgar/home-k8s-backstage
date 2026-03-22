@@ -73,11 +73,11 @@ function parseTrivyResults(results: any): Map<string, Package> {
 
         fixedVersions = fixedVersions.map((value) => value.trim());
 
-        if (importantResults.has(result['PkgID'])) {
-            importantResults.get(result['PkgID'])?.merge(currentVersion, fixedVersions);
+        if (importantResults.has(result['PkgName'])) {
+            importantResults.get(result['PkgName'])?.merge(currentVersion, fixedVersions);
         } else {
-            let newPackage = new Package(result['PkgID'], result['PkgName'], currentVersion, fixedVersions);
-            importantResults.set(result['PkgID'], newPackage);
+            let newPackage = new Package(result['PkgName'], result['PkgName'], currentVersion, fixedVersions);
+            importantResults.set(result['PkgName'], newPackage);
         }
     }
     return importantResults
@@ -103,8 +103,8 @@ function doPatches(parsedResults: Map<string, Package>, stage?: string) {
         console.log("--- Running yarn install");
         runCommand("yarn install", true);
 
-        // console.log("--- Running integration tests");
-        // runCommand("yarn run test:e2e");
+        console.log("--- Running integration tests");
+        runCommand("yarn run test:e2e");
     } else {
         console.log("--- Nothing to patch!")
     }
@@ -131,33 +131,6 @@ function getPatchStages(parsedResults: Map<string, Package>): Map<string, Packag
     return [smallChanges, mediumChanges, largeChanges]
 }
 
-function findTransitiveResolutions() {
-    let pkgContents = fs.readFileSync("./package.json").toString();
-    let pkgJSON = JSON.parse(pkgContents);
-    let resolutions = pkgJSON.resolutions;
-
-    let transitiveResolutions: any = {};
-
-    for (let res of Object.keys(resolutions)) {
-        if (res.includes(':')) {
-            let matches = PKG_PATTERN.exec(res);
-            if (matches != null) {
-                let [, pkgName, pkgVersion] = matches;
-                if (transitiveResolutions[pkgName] === undefined) {
-                    transitiveResolutions[pkgName] = new Map<string, string>([[pkgVersion, resolutions[res]]]);
-                } else {
-                    transitiveResolutions[pkgName][pkgVersion] = resolutions[res];
-                }
-            } else {
-                console.log(`could not find matches for ${res}: ${matches}`);
-            }
-            // transitiveResolutions[res] = [res.split(":")[1], resolutions[res]]
-        }
-    }
-
-    console.log(transitiveResolutions)
-}
-
 function runPatchStages(changeStages: Map<string, Package>[]){
     cleanResolutions();
     // batch all patch-level changes together
@@ -169,32 +142,30 @@ function runPatchStages(changeStages: Map<string, Package>[]){
         doPatches(thisPkg, `major: ${pkgName}`);
     }
 
-    findTransitiveResolutions();
-
     console.log("===== Deduping yarn packages =====");
     runCommand("yarn dedupe", true);
 
-    // console.log("===== Bumping version =====");
-    // runCommand("yarn version patch", true);
+    console.log("===== Bumping version =====");
+    runCommand("yarn version patch", true);
 
-    // let currentBranch = runCommand("git rev-parse --abbrev-ref HEAD", true);
+    let currentBranch = runCommand("git rev-parse --abbrev-ref HEAD", true);
     
-    // if (currentBranch === "main") {
-    //     console.log("===== Creating new branch =====");
-    //     let versionOutput = runCommand("jq -r .version package.json", true);
-    //     let sanitizedVersion = semver.parse(versionOutput);
-    //     runCommand(`git checkout -b backstage-${sanitizedVersion}`, true);
-    // }
-    // console.log("===== Staging changes =====");
-    // runCommand("git commit -a -m 'automated patches'", true);
-    // runCommand("git push", true);
+    if (currentBranch === "main") {
+        console.log("===== Creating new branch =====");
+        let versionOutput = runCommand("jq -r .version package.json", true);
+        let sanitizedVersion = semver.parse(versionOutput);
+        runCommand(`git checkout -b backstage-${sanitizedVersion}`, true);
+    }
+    console.log("===== Staging changes =====");
+    runCommand("git commit -a -m 'automated patches'", true);
+    runCommand("git push", true);
 }
 
 function cleanResolutions() {
     let pkgContents = fs.readFileSync("./package.json").toString();
     let pkgJSON = JSON.parse(pkgContents);
 
-    // pkgJSON['resolutions'] = pkgJSON['persistentResolutions'];
+    pkgJSON['resolutions'] = pkgJSON['persistentResolutions'];
 
     let outputContents = JSON.stringify(pkgJSON, undefined, 2);
     fs.writeFileSync("./package.json", outputContents);
@@ -226,5 +197,3 @@ let parsedResults = parseTrivyResults(results);
 
 let changeStages = getPatchStages(parsedResults);
 runPatchStages(changeStages);
-
-findTransitiveResolutions();
