@@ -144,21 +144,6 @@ function runPatchStages(changeStages: Map<string, Package>[]){
 
     console.log("===== Deduping yarn packages =====");
     runCommand("yarn dedupe", true);
-
-    console.log("===== Bumping version =====");
-    runCommand("yarn version patch", true);
-
-    let currentBranch = runCommand("git rev-parse --abbrev-ref HEAD", true);
-    
-    if (currentBranch === "main") {
-        console.log("===== Creating new branch =====");
-        let versionOutput = runCommand("jq -r .version package.json", true);
-        let sanitizedVersion = semver.parse(versionOutput);
-        runCommand(`git checkout -b backstage-${sanitizedVersion}`, true);
-    }
-    console.log("===== Staging changes =====");
-    runCommand("git commit -a -m 'automated patches'", true);
-    runCommand("git push", true);
 }
 
 function cleanResolutions() {
@@ -186,6 +171,29 @@ function attemptUpdate(pkg: Package) {
     fs.writeFileSync("./package.json", outputContents);
 }
 
+function bumpVersion() {
+    console.log("===== Bumping version =====");
+    runCommand("yarn version patch", true);
+
+    let currentBranch = runCommand("git rev-parse --abbrev-ref HEAD", true);
+    
+    if (currentBranch === "main") {
+        console.log("===== Creating new branch =====");
+        let versionOutput = runCommand("jq -r .version package.json", true);
+        let sanitizedVersion = semver.parse(versionOutput);
+        runCommand(`git checkout -b backstage-${sanitizedVersion}`, true);
+    }
+    console.log("===== Staging changes =====");
+    runCommand("git commit -a -m 'automated patches'", true);
+    runCommand("git push", true);
+};
+
+console.log("===== Clearing old pins =====");
+cleanResolutions();
+
+console.log("===== Running baseline yarn install =====");
+runCommand("yarn install");
+
 console.log("===== Updating Trivy DB =====");
 runCommand(`${TRIVY_COMMAND} --download-db-only`);
 
@@ -197,3 +205,8 @@ let parsedResults = parseTrivyResults(results);
 
 let changeStages = getPatchStages(parsedResults);
 runPatchStages(changeStages);
+
+console.log("===== Re-running scan to ensure fixes =====");
+runCommand(`${TRIVY_COMMAND} --skip-db-update --ignore-unfixed --scanners vuln .`);
+
+bumpVersion();
