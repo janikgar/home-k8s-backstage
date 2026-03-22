@@ -4,7 +4,6 @@ import * as semver from "semver"
 
 const DOCKER_BINARY = "podman"
 const TRIVY_COMMAND = `${DOCKER_BINARY} run -v trivy:/cache -v $PWD:/repo aquasec/trivy:0.69.3 repository --cache-dir /cache`
-const PACKAGE_PATTERN = /(?<pkgName>.*)\@(?<version>.*)/g
 
 class Package {
     packageName: string;
@@ -93,7 +92,7 @@ function prettyPrintResults(parsedResults: Map<string, Package>) {
 }
 
 function doPatches(parsedResults: Map<string, Package>, stage?: string) {
-    console.log(`===== Beginning ${stage + " "}updates =====`)
+    console.log(`===== Beginning ${stage + " "}updates =====`);
     prettyPrintResults(parsedResults);
     if (parsedResults.size > 0) {
         for (let [_, contents] of parsedResults) {
@@ -132,6 +131,7 @@ function getPatchStages(parsedResults: Map<string, Package>): Map<string, Packag
 }
 
 function runPatchStages(changeStages: Map<string, Package>[]){
+    cleanResolutions();
     // batch all patch-level changes together
     doPatches(changeStages[0], "patch");
     doPatches(changeStages[1], "minor");
@@ -160,10 +160,19 @@ function runPatchStages(changeStages: Map<string, Package>[]){
     runCommand("git push", true);
 }
 
+function cleanResolutions() {
+    let pkgContents = fs.readFileSync("./package.json").toString();
+    let pkgJSON = JSON.parse(pkgContents);
+
+    pkgJSON['resolutions'] = pkgJSON['persistentResolutions'];
+
+    let outputContents = JSON.stringify(pkgJSON, undefined, 2);
+    fs.writeFileSync("./package.json", outputContents);
+}
+
 function attemptUpdate(pkg: Package) {
     let pkgContents = fs.readFileSync("./package.json").toString();
     let pkgJSON = JSON.parse(pkgContents);
-    // pkgJSON['resolutions'][pkg.packageName] = `~${pkg.closestCandidate.toString()}`;
 
     let yarnWhyOutput = runCommand(`yarn why ${pkg.shortPackageName} --json`, true);
     yarnWhyOutput.split("\n").slice(0, -1).map((line) => {
