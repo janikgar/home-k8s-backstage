@@ -8,6 +8,10 @@ const PKG_PATTERN = new RegExp(/(?<pkgName>.*?)@(?:|virtual.*)npm:(?<pkgVersion>
 
 const readJSON = (path: string) => JSON.parse(fs.readFileSync(path).toString())
 
+const writeJSON = ((path: string, content: any) => {
+    fs.writeFileSync("./package.json", JSON.stringify(content, undefined, 2));
+})
+
 class Package {
     packageName: string;
     packageVersion: semver.SemVer;
@@ -19,12 +23,8 @@ class Package {
         this.packageName = fullPackageName;
         this.packageVersion = semver.parse(currentPackage)!;
 
-        let patchSet = new Set<semver.SemVer>();
-        for (let patchCandidate of patchCandidates) {
-            patchSet.add(semver.parse(patchCandidate)!);
-        }
-
-        let dedupedCandidates = new Array(...patchSet).sort();
+        let patchSet = new Set<semver.SemVer>(patchCandidates.map(c => semver.parse(c)!));
+        let dedupedCandidates = Array.from(patchSet).sort();
         let diffedCandidates = dedupedCandidates.filter((v) => {
             return semver.lt(currentPackage, v)
         }).sort();
@@ -39,24 +39,14 @@ class Package {
      */
     public merge(currentVersion: string, patchCandidates: string[]) {
         this.packageName = currentVersion;
-        let patchSet = new Set<semver.SemVer>(this.patchCandidates);
-        patchCandidates.map((patchCandidate) => {patchSet.add(semver.parse(patchCandidate)!)});
-        this.patchCandidates = semver.sort(new Array(...patchSet).sort());
+        let patchSet = new Set<semver.SemVer>([...this.patchCandidates, ...patchCandidates.map(c => semver.parse(c)!)]);
+        this.patchCandidates = Array.from(patchSet).sort();
     }
 }
 
 // Run a command line command and return the output
-function runCommand(command: string, logOutput?: boolean): string {
-    let output = "";
-    try {
-        output = execSync(command, { encoding: "utf-8" });
-    } catch (errorOutput: any) {
-        throw(errorOutput);
-    }
-    if (logOutput) {
-        console.log(output);
-    }
-    return output
+function runCommand(command: string, logOutput = false): string {
+    return execSync(command, { encoding: "utf-8" });
 }
 
 function readTrivyResults(fileName: string): object {
@@ -131,7 +121,6 @@ function getPatchStages(parsedResults: Map<string, Package>): Map<string, Packag
 }
 
 function runPatchStages(changeStages: Map<string, Package>[]){
-    cleanResolutions();
     // batch all patch-level changes together
     doPatches(changeStages[0], "patch");
     doPatches(changeStages[1], "minor");
@@ -149,8 +138,7 @@ function cleanResolutions() {
     let pkgJSON = readJSON("./package.json");
     pkgJSON['resolutions'] = pkgJSON['persistentResolutions'];
 
-    let outputContents = JSON.stringify(pkgJSON, undefined, 2);
-    fs.writeFileSync("./package.json", outputContents);
+    writeJSON("./package.json", pkgJSON);
 }
 
 function attemptUpdate(pkg: Package) {
@@ -163,8 +151,7 @@ function attemptUpdate(pkg: Package) {
         pkgJSON['resolutions'][innerContent.descriptor] = `~${pkg.closestCandidate.toString()}`;
     });
 
-    let outputContents = JSON.stringify(pkgJSON, undefined, 2);
-    fs.writeFileSync("./package.json", outputContents);
+    writeJSON("./package.json", pkgJSON);
 }
 
 function bumpVersion() {
