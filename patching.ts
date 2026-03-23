@@ -6,17 +6,17 @@ const DOCKER_BINARY = "podman";
 const TRIVY_COMMAND = `${DOCKER_BINARY} run -v trivy:/cache -v $PWD:/repo aquasec/trivy:0.69.3 repository --cache-dir /cache`;
 const PKG_PATTERN = new RegExp(/(?<pkgName>.*?)@(?:|virtual.*)npm:(?<pkgVersion>.*)/);
 
+const readJSON = (path: string) => JSON.parse(fs.readFileSync(path).toString())
+
 class Package {
     packageName: string;
-    shortPackageName: string;
     packageVersion: semver.SemVer;
     patchCandidates: semver.SemVer[];
     closestCandidate: semver.SemVer;
     closestCandidateDiff: semver.ReleaseType;
 
-    constructor(fullPackageName: string, shortPackageName: string, currentPackage: string, patchCandidates: string[]){
+    constructor(fullPackageName: string, currentPackage: string, patchCandidates: string[]){
         this.packageName = fullPackageName;
-        this.shortPackageName = shortPackageName;
         this.packageVersion = semver.parse(currentPackage)!;
 
         let patchSet = new Set<semver.SemVer>();
@@ -60,8 +60,7 @@ function runCommand(command: string, logOutput?: boolean): string {
 }
 
 function readTrivyResults(fileName: string): object {
-    let resultContent = fs.readFileSync(fileName).toString();
-    return JSON.parse(resultContent);
+    return readJSON(fileName) as object;
 }
 
 function parseTrivyResults(results: any): Map<string, Package> {
@@ -76,7 +75,7 @@ function parseTrivyResults(results: any): Map<string, Package> {
         if (importantResults.has(result['PkgName'])) {
             importantResults.get(result['PkgName'])?.merge(currentVersion, fixedVersions);
         } else {
-            let newPackage = new Package(result['PkgName'], result['PkgName'], currentVersion, fixedVersions);
+            let newPackage = new Package(result['PkgName'], currentVersion, fixedVersions);
             importantResults.set(result['PkgName'], newPackage);
         }
     }
@@ -147,9 +146,7 @@ function runPatchStages(changeStages: Map<string, Package>[]){
 }
 
 function cleanResolutions() {
-    let pkgContents = fs.readFileSync("./package.json").toString();
-    let pkgJSON = JSON.parse(pkgContents);
-
+    let pkgJSON = readJSON("./package.json");
     pkgJSON['resolutions'] = pkgJSON['persistentResolutions'];
 
     let outputContents = JSON.stringify(pkgJSON, undefined, 2);
@@ -157,10 +154,9 @@ function cleanResolutions() {
 }
 
 function attemptUpdate(pkg: Package) {
-    let pkgContents = fs.readFileSync("./package.json").toString();
-    let pkgJSON = JSON.parse(pkgContents);
+    let pkgJSON = readJSON("./package.json");
 
-    let yarnWhyOutput = runCommand(`yarn why ${pkg.shortPackageName} --json`, false);
+    let yarnWhyOutput = runCommand(`yarn why ${pkg.packageName} --json`, false);
     yarnWhyOutput.split("\n").slice(0, -1).map((line) => {
         let lineJSON = JSON.parse(line);
         let innerContent = Object.entries<any>(lineJSON.children)[0][1];
