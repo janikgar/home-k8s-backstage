@@ -4,7 +4,7 @@ import * as semver from "semver"
 
 const DOCKER_BINARY = "podman";
 const TRIVY_COMMAND = `${DOCKER_BINARY} run -v trivy:/cache -v $PWD:/repo aquasec/trivy:0.69.3 repository --cache-dir /cache`;
-const PKG_PATTERN = new RegExp(/(?<pkgName>.*?)@(?:|virtual.*)npm:(?<pkgVersion>.*)/);
+const PKG_PATTERN = new RegExp(/(?<pkgName>(?:@|).*?)@.*/g);
 
 const readJSON = (path: string) => JSON.parse(fs.readFileSync(path).toString())
 
@@ -14,38 +14,66 @@ const writeJSON = ((path: string, content: any) => {
 
 class Package {
     packageName: string;
+    shortPackageName: string;
     packageVersion: semver.SemVer;
     patchCandidates: semver.SemVer[];
     closestCandidate: semver.SemVer;
     closestCandidateDiff: semver.ReleaseType;
 
-    constructor(fullPackageName: string, currentPackage: string, patchCandidates: string[]){
+    constructor(fullPackageName: string, currentPackageVersion: string, patchCandidates: string[]){
         this.packageName = fullPackageName;
-        this.packageVersion = semver.parse(currentPackage)!;
+        let pkgNameMatch = fullPackageName.matchAll(PKG_PATTERN);
+        let shortPackageName = ""
+        for (let match of pkgNameMatch) {
+            shortPackageName = match.groups!.pkgName;
+        }
+        this.shortPackageName = shortPackageName;
+        this.packageVersion = semver.parse(currentPackageVersion)!;
 
-        let patchSet = new Set<semver.SemVer>(patchCandidates.map(c => semver.parse(c)!));
-        let dedupedCandidates = Array.from(patchSet).sort();
-        let diffedCandidates = dedupedCandidates.filter((v) => {
-            return semver.lt(currentPackage, v)
-        }).sort();
-
-        this.patchCandidates = diffedCandidates;
+        this.patchCandidates = this.dedupeAndSortVersions(this.packageVersion, patchCandidates);
         this.closestCandidate = this.patchCandidates[0];
         this.closestCandidateDiff = semver.diff(this.packageVersion, this.closestCandidate)!;
+    }
+
+    private dedupeAndSortVersions(matchVersion: semver.SemVer, patchCandidates: string[]){
+        let patchSet = new Set<semver.SemVer>();
+        for (let patchCandidate of patchCandidates) {
+            patchSet.add(semver.parse(patchCandidate)!);
+        }
+
+        let dedupedCandidates = new Array(...patchSet).sort();
+        let diffedCandidates = dedupedCandidates.filter((v) => {
+            return semver.lt(matchVersion, v)
+        }).sort((a, b) => {return semver.compare(a, b)});
+
+        return diffedCandidates
     }
 
     /**
      * merge
      */
-    public merge(currentVersion: string, patchCandidates: string[]) {
-        this.packageName = currentVersion;
-        let patchSet = new Set<semver.SemVer>([...this.patchCandidates, ...patchCandidates.map(c => semver.parse(c)!)]);
-        this.patchCandidates = Array.from(patchSet).sort();
+    public merge(patchCandidates: string[]) {
+        let patchSet = new Set<string>(patchCandidates);
+        this.patchCandidates.map((ver: semver.SemVer) => patchSet.add(ver.format()));
+        this.patchCandidates = this.dedupeAndSortVersions(this.packageVersion, new Array(...patchSet))
+    }
+
+    /**
+     * prettyPrint
+     */
+    public prettyPrint() {
+        console.log(`
+packageName: ${this.packageName}
+shortPackageName: ${this.shortPackageName}
+packageVersion: ${this.packageVersion.toString()}
+patchCandidates: ${this.patchCandidates.map((pc: semver.SemVer) => {return pc.toString()})}
+closestCandidate: ${this.closestCandidate.toString()}
+closestCandidateDiff: ${this.closestCandidateDiff.toString()}`);
     }
 }
 
 // Run a command line command and return the output
-function runCommand(command: string, logOutput = false): string {
+function runCommand(command: string): string {
     return execSync(command, { encoding: "utf-8" });
 }
 
@@ -62,22 +90,22 @@ function parseTrivyResults(results: any): Map<string, Package> {
 
         fixedVersions = fixedVersions.map((value) => value.trim());
 
-        if (importantResults.has(result['PkgName'])) {
-            importantResults.get(result['PkgName'])?.merge(currentVersion, fixedVersions);
+        if (importantResults.has(result['PkgID'])) {
+            importantResults.get(result['PkgID'])?.merge(fixedVersions);
         } else {
-            let newPackage = new Package(result['PkgName'], currentVersion, fixedVersions);
-            importantResults.set(result['PkgName'], newPackage);
+            let newPackage = new Package(result['PkgID'], currentVersion, fixedVersions);
+            importantResults.set(result['PkgID'], newPackage);
         }
     }
     return importantResults
 }
 
 function prettyPrintResults(parsedResults: Map<string, Package>) {
-    for (let [pkgName, pkgList] of parsedResults) {
-        let curVer = pkgList.packageName;
-        let bestCandidate = pkgList.closestCandidate;
-        let semverDiff = pkgList.closestCandidateDiff;
-        console.log(`${pkgName}: ${curVer} -> ${bestCandidate}: (${semverDiff})`);
+    for (let [_, pkg] of parsedResults) {
+        let curVer = pkg.packageVersion;
+        let bestCandidate = pkg.closestCandidate;
+        let semverDiff = pkg.closestCandidateDiff;
+        console.log(`${pkg.shortPackageName}: ${curVer} -> ${bestCandidate}: (${semverDiff})`);
     }
 }
 
@@ -90,10 +118,10 @@ function doPatches(parsedResults: Map<string, Package>, stage?: string) {
         }
 
         console.log("--- Running yarn install");
-        runCommand("yarn install", true);
+        runCommand("yarn install");
 
-        console.log("--- Running integration tests");
-        runCommand("yarn run test:e2e");
+        // console.log("--- Running integration tests");
+        // runCommand("yarn run test:e2e");
     } else {
         console.log("--- Nothing to patch!")
     }
@@ -129,9 +157,6 @@ function runPatchStages(changeStages: Map<string, Package>[]){
         thisPkg.set(pkgName, pkgDetails)
         doPatches(thisPkg, `major: ${pkgName}`);
     }
-
-    console.log("===== Deduping yarn packages =====");
-    runCommand("yarn dedupe", true);
 }
 
 function cleanResolutions() {
@@ -144,10 +169,14 @@ function cleanResolutions() {
 function attemptUpdate(pkg: Package) {
     let pkgJSON = readJSON("./package.json");
 
-    let yarnWhyOutput = runCommand(`yarn why ${pkg.packageName} --json`, false);
+    console.log(`attempting to patch ${pkg.shortPackageName}`)
+    let yarnWhyOutput = runCommand(`yarn why ${pkg.shortPackageName} --json`);
     yarnWhyOutput.split("\n").slice(0, -1).map((line) => {
         let lineJSON = JSON.parse(line);
         let innerContent = Object.entries<any>(lineJSON.children)[0][1];
+        if (innerContent.descriptor.includes("virtual")) {
+            innerContent.descriptor = innerContent.descriptor.replace(/virtual.*:/g, "");
+        }
         pkgJSON['resolutions'][innerContent.descriptor] = `~${pkg.closestCandidate.toString()}`;
     });
 
@@ -156,19 +185,19 @@ function attemptUpdate(pkg: Package) {
 
 function bumpVersion() {
     console.log("===== Bumping version =====");
-    runCommand("yarn version patch", true);
+    runCommand("yarn version patch");
 
-    let currentBranch = runCommand("git rev-parse --abbrev-ref HEAD", true);
+    let currentBranch = runCommand("git rev-parse --abbrev-ref HEAD");
     
     if (currentBranch === "main") {
         console.log("===== Creating new branch =====");
-        let versionOutput = runCommand("jq -r .version package.json", true);
+        let versionOutput = runCommand("jq -r .version package.json");
         let sanitizedVersion = semver.parse(versionOutput);
-        runCommand(`git checkout -b backstage-${sanitizedVersion}`, true);
+        runCommand(`git checkout -b backstage-${sanitizedVersion}`);
     }
     console.log("===== Staging changes =====");
-    runCommand("git commit -a -m 'automated patches'", true);
-    runCommand("git push", true);
+    runCommand("git commit -a -m 'automated patches'");
+    runCommand("git push");
 };
 
 console.log("===== Clearing old pins =====");
@@ -186,10 +215,17 @@ runCommand(`${TRIVY_COMMAND} --skip-db-update -f json -o /repo/vulns.json --igno
 let results = readTrivyResults("./vulns.json");
 let parsedResults = parseTrivyResults(results);
 
+console.log("===== Running patches by stage =====");
 let changeStages = getPatchStages(parsedResults);
 runPatchStages(changeStages);
+
+console.log("===== Deduping yarn packages =====");
+runCommand("yarn dedupe");
+
+console.log("===== Installing yarn packages =====");
+runCommand("yarn install");
 
 console.log("===== Re-running scan to ensure fixes =====");
 runCommand(`${TRIVY_COMMAND} --skip-db-update --ignore-unfixed --scanners vuln .`);
 
-bumpVersion();
+// bumpVersion();
