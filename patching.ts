@@ -228,4 +228,4 @@ runCommand("yarn install");
 console.log("===== Re-running scan to ensure fixes =====");
 runCommand(`${TRIVY_COMMAND} --skip-db-update --ignore-unfixed --scanners vuln .`);
 
-bumpVersion();
+// bumpVersion();
