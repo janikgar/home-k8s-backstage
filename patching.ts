@@ -189,7 +189,8 @@ function bumpVersion() {
 
     let currentBranch = runCommand("git rev-parse --abbrev-ref HEAD");
     
-    if (currentBranch === "main") {
+    // if (currentBranch === "main") {
+    if (true) {
         console.log("===== Creating new branch =====");
         let versionOutput = runCommand("jq -r .version package.json");
         let sanitizedVersion = semver.parse(versionOutput);
