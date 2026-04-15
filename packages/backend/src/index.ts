@@ -116,4 +116,7 @@ backend.add(import('@backstage/plugin-search-backend-module-pg'));
 backend.add(import('@backstage/plugin-search-backend-module-catalog'));
 backend.add(import('@backstage/plugin-search-backend-module-techdocs'));
 
+// mcp actions plugin
+backend.add(import('@backstage/plugin-mcp-actions-backend'));
+ 
 backend.start();

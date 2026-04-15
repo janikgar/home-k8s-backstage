@@ -1,6 +1,19 @@
 app:
   title: Home Kubernetes
   baseUrl: http://localhost:3000
+  packages: all
+ 
+  extensions:
+    # Disable the nav items that we're manually rendering in packages/app/src/modules/nav/Sidebar.tsx
+    - nav-item:search: false
+    - nav-item:user-settings: false
+    - nav-item:catalog: false
+    - nav-item:scaffolder: false
+ 
+    # Configure the catalog index page to be the root page, this is normally mounted on /catalog
+    - page:catalog:
+        config:
+          path: /
 
 organization:
   name: Home-K8s
@@ -30,6 +43,12 @@ backend:
   database:
     client: better-sqlite3
     connection: ':memory:'
+  # see https://backstage.io/docs/ai/mcp-actions#actions-configuration for more details
+  actions:
+    pluginSources:
+      - auth
+      - catalog
+      - scaffolder
   # workingDirectory: /tmp # Use this to configure a working directory for the scaffolder, defaults to the OS temp-dir
 
 integrations:
@@ -72,9 +91,6 @@ techdocs:
   publisher:
     type: 'local' # Alternatives - 'googleGcs' or 'awsS3'. Read documentation for using alternatives.
 
-permission:
-  enabled: true
-
 auth:
   environment: development
   session:
@@ -90,6 +106,18 @@ auth:
         signIn:
           resolvers:
             - resolver: mySignInResolver
+  # see https://backstage.io/docs/ai/mcp-actions#client-id-metadata-documents
+  # to learn more about client id metadata documents
+  experimentalClientIdMetadataDocuments:
+    enabled: false
+    # Optional: restrict which `client_id` URLs are allowed (defaults to ['*'])
+    # allowedClientIdPatterns:
+    #   - 'https://example.com/*'
+    #   - 'https://*.trusted-domain.com/*'
+    # Optional: restrict which redirect URIs are allowed (defaults to ['*'])
+    # allowedRedirectUriPatterns:
+    #   - 'http://localhost:*'
+    #   - 'https://*.example.com/*'
 
 scaffolder:
   defaultAuthor:
@@ -151,3 +179,13 @@ kubernetes:
             - group: 'monitoring.coreos.com'
               apiVersion: 'v1'
               plural: 'servicemonitors'
+
+# see https://backstage.io/docs/permissions/getting-started for more on the permission framework
+permission:
+  # setting this to `false` will disable permissions
+  enabled: true
+
+# see https://backstage.io/docs/ai/mcp-actions for more details
+mcpActions:
+  name: 'My Company Backstage' # defaults to "backstage"
+  description: 'Tools for managing your software catalog, creating new services from templates, and exploring your developer portal' # optional
