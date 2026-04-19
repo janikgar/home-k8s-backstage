@@ -3,7 +3,7 @@ import * as fs from "node:fs"
 import * as semver from "semver"
 
 const DOCKER_BINARY = "podman";
-const TRIVY_COMMAND = `${DOCKER_BINARY} run -v trivy:/cache -v $PWD:/repo aquasec/trivy:0.69.3 repository --cache-dir /cache`;
+const TRIVY_COMMAND = `${DOCKER_BINARY} run -v trivy:/cache -v $PWD:/repo aquasec/trivy:0.70.0 repository --cache-dir /cache`;
 const PKG_PATTERN = new RegExp(/(?<pkgName>(?:@|).*?)@.*/g);
 
 const readJSON = (path: string) => JSON.parse(fs.readFileSync(path).toString())
@@ -228,4 +228,4 @@ runCommand("yarn install");
 console.log("===== Re-running scan to ensure fixes =====");
 runCommand(`${TRIVY_COMMAND} --skip-db-update --ignore-unfixed --scanners vuln .`);
 
-bumpVersion();
+// bumpVersion();
