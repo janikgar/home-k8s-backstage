@@ -1,5 +1,5 @@
 import { createBackend } from '@backstage/backend-defaults';
-import { createBackendModule } from '@backstage/backend-plugin-api';
+import { coreServices, createBackendModule } from '@backstage/backend-plugin-api';
 import { authProvidersExtensionPoint, createOAuthProviderFactory, commonSignInResolvers } from '@backstage/plugin-auth-node';
 import { oidcAuthenticator } from '@backstage/plugin-auth-backend-module-oidc-provider';
 import { createSignInResolverFactory } from '@backstage/plugin-auth-node';
@@ -65,8 +65,11 @@ export const authModuleVaultProvider = createBackendModule({
   moduleId: 'vault-provider',
   register(reg) {
     reg.registerInit({
-      deps: { providers: authProvidersExtensionPoint },
-      async init({ providers }) {
+      deps: {
+        providers: authProvidersExtensionPoint,
+        logger: coreServices.logger,
+      },
+      async init({ providers, logger }) {
         providers.registerProvider({
           providerId: 'vault-provider',
           factory: createOAuthProviderFactory({

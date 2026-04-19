@@ -3,7 +3,7 @@ import * as fs from "node:fs"
 import * as semver from "semver"
 
 const DOCKER_BINARY = "podman";
-const TRIVY_COMMAND = `${DOCKER_BINARY} run -v trivy:/cache -v $PWD:/repo aquasec/trivy:0.69.3 repository --cache-dir /cache`;
+const TRIVY_COMMAND = `${DOCKER_BINARY} run -v trivy:/cache -v $PWD:/repo aquasec/trivy:0.70.0 repository --cache-dir /cache`;
 const PKG_PATTERN = new RegExp(/(?<pkgName>(?:@|).*?)@.*/g);
 
 const readJSON = (path: string) => JSON.parse(fs.readFileSync(path).toString())
@@ -200,32 +200,32 @@ function bumpVersion() {
     runCommand("git push");
 };
 
-// console.log("===== Clearing old pins =====");
-// cleanResolutions();
+console.log("===== Clearing old pins =====");
+cleanResolutions();
 
-// console.log("===== Running baseline yarn install =====");
-// runCommand("yarn install");
+console.log("===== Running baseline yarn install =====");
+runCommand("yarn install");
 
-// console.log("===== Updating Trivy DB =====");
-// runCommand(`${TRIVY_COMMAND} --download-db-only`);
+console.log("===== Updating Trivy DB =====");
+runCommand(`${TRIVY_COMMAND} --download-db-only`);
 
-// console.log("===== Scanning with Trivy =====");
-// runCommand(`${TRIVY_COMMAND} --skip-db-update -f json -o /repo/vulns.json --ignore-unfixed --scanners vuln . `);
+console.log("===== Scanning with Trivy =====");
+runCommand(`${TRIVY_COMMAND} --skip-db-update -f json -o /repo/vulns.json --ignore-unfixed --scanners vuln . `);
 
-// let results = readTrivyResults("./vulns.json");
-// let parsedResults = parseTrivyResults(results);
+let results = readTrivyResults("./vulns.json");
+let parsedResults = parseTrivyResults(results);
 
-// console.log("===== Running patches by stage =====");
-// let changeStages = getPatchStages(parsedResults);
-// runPatchStages(changeStages);
+console.log("===== Running patches by stage =====");
+let changeStages = getPatchStages(parsedResults);
+runPatchStages(changeStages);
 
-// console.log("===== Deduping yarn packages =====");
-// runCommand("yarn dedupe");
+console.log("===== Deduping yarn packages =====");
+runCommand("yarn dedupe");
 
-// console.log("===== Installing yarn packages =====");
-// runCommand("yarn install");
+console.log("===== Installing yarn packages =====");
+runCommand("yarn install");
 
-// console.log("===== Re-running scan to ensure fixes =====");
-// runCommand(`${TRIVY_COMMAND} --skip-db-update --ignore-unfixed --scanners vuln .`);
+console.log("===== Re-running scan to ensure fixes =====");
+runCommand(`${TRIVY_COMMAND} --skip-db-update --ignore-unfixed --scanners vuln .`);
 
-bumpVersion();
+// bumpVersion();

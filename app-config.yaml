@@ -159,7 +159,7 @@ kubernetes:
   clusterLocatorMethods:
     - type: config
       clusters:
-        - url: https://192.168.1.101:6443
+        - url: https://192.168.1.80:6443
           name: home-k8s
           authProvider: serviceAccount
           serviceAccountToken: ${K8S_TOKEN}
