@@ -69,7 +69,7 @@ export const authModuleVaultProvider = createBackendModule({
         providers: authProvidersExtensionPoint,
         logger: coreServices.logger,
       },
-      async init({ providers, logger }) {
+      async init({ providers }) {
         providers.registerProvider({
           providerId: 'vault-provider',
           factory: createOAuthProviderFactory({
