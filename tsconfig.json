@@ -3,10 +3,14 @@
   "include": [
     "packages/*/src",
     "packages/*/config.d.ts",
+    "packages/*/webpack.config.ts",
+    "packages/*/rspack.config.ts",
     "plugins/*/src",
     "plugins/*/config.d.ts",
     "plugins/*/dev",
-    "plugins/*/migrations"
+    "plugins/*/migrations",
+    "patching.ts",
+    "playwright.config.ts"
   ],
   "exclude": ["node_modules"],
   "compilerOptions": {

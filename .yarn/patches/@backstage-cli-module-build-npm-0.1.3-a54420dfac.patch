@@ -1,0 +1,12 @@
+diff --git a/dist/lib/bundler/server.cjs.js b/dist/lib/bundler/server.cjs.js
+index fa16990fdbe8e6f5f0a1debc0c25fa0cd2b0a40a..ce4ed7843a4aa1b8f99eb923db7414a507230449 100644
+--- a/dist/lib/bundler/server.cjs.js
++++ b/dist/lib/bundler/server.cjs.js
+@@ -167,6 +167,7 @@ DEPRECATION WARNING: React Router Beta is deprecated and support for it will be
+       // When the dev server is behind a proxy, the host and public hostname differ
+       allowedHosts: [url.hostname],
+       client: {
++        overlay: false,
+         webSocketURL: { hostname: host, port }
+       },
+       headers: {

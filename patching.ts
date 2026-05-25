@@ -8,9 +8,13 @@ const PKG_PATTERN = new RegExp(/(?<pkgName>(?:@|).*?)@.*/g);
 
 const readJSON = (path: string) => JSON.parse(fs.readFileSync(path).toString())
 
-const writeJSON = ((path: string, content: any) => {
+const writeJSON = ((content: any) => {
     fs.writeFileSync("./package.json", JSON.stringify(content, undefined, 2));
 })
+
+let e2e = false;
+let bump = false;
+let clear = false;
 
 class Package {
     packageName: string;
@@ -84,17 +88,21 @@ function readTrivyResults(fileName: string): object {
 function parseTrivyResults(results: any): Map<string, Package> {
     let importantResults = new Map<string, Package>();
 
-    for (let result of results['Results'][0]['Vulnerabilities']) {
-        let currentVersion = result['InstalledVersion'];
-        let fixedVersions = result['FixedVersion'].split(",") as string[];
+    for (let resultSet of results['Results']) {
+        if (resultSet['Type'] === "yarn") {
+            for (let result of resultSet['Vulnerabilities']) {
+                let currentVersion = result['InstalledVersion'];
+                let fixedVersions = result['FixedVersion'].split(",") as string[];
 
-        fixedVersions = fixedVersions.map((value) => value.trim());
+                fixedVersions = fixedVersions.map((value) => value.trim());
 
-        if (importantResults.has(result['PkgID'])) {
-            importantResults.get(result['PkgID'])?.merge(fixedVersions);
-        } else {
-            let newPackage = new Package(result['PkgID'], currentVersion, fixedVersions);
-            importantResults.set(result['PkgID'], newPackage);
+                if (importantResults.has(result['PkgID'])) {
+                    importantResults.get(result['PkgID'])?.merge(fixedVersions);
+                } else {
+                    let newPackage = new Package(result['PkgID'], currentVersion, fixedVersions);
+                    importantResults.set(result['PkgID'], newPackage);
+                }
+            }
         }
     }
     return importantResults
@@ -120,8 +128,10 @@ function doPatches(parsedResults: Map<string, Package>, stage?: string) {
         console.log("--- Running yarn install");
         runCommand("yarn install");
 
-        console.log("--- Running integration tests");
-        runCommand("yarn run test:e2e");
+        if (e2e) {
+            console.log("--- Running integration tests");
+            runCommand("yarn run test:e2e");
+        }
     } else {
         console.log("--- Nothing to patch!")
     }
@@ -163,7 +173,7 @@ function cleanResolutions() {
     let pkgJSON = readJSON("./package.json");
     pkgJSON['resolutions'] = pkgJSON['persistentResolutions'];
 
-    writeJSON("./package.json", pkgJSON);
+    writeJSON(pkgJSON);
 }
 
 function attemptUpdate(pkg: Package) {
@@ -180,7 +190,7 @@ function attemptUpdate(pkg: Package) {
         pkgJSON['resolutions'][innerContent.descriptor] = `~${pkg.closestCandidate.toString()}`;
     });
 
-    writeJSON("./package.json", pkgJSON);
+    writeJSON(pkgJSON);
 }
 
 function bumpVersion() {
@@ -200,11 +210,55 @@ function bumpVersion() {
     runCommand("git push");
 };
 
+function parseFlags() {
+    let flagMap: Map<string, boolean> = new Map();
+
+    let matchPattern = /^\-+(?<isFalse>no\-|)(?<flag>.*)/
+    for (let arg of process.argv) {
+        let argMarch = matchPattern.exec(arg);
+        if (argMarch !== null) {
+            flagMap.set(argMarch.groups?.flag!, argMarch.groups?.isFalse === "");
+        }
+    }
+
+    if (flagMap.has('help') || flagMap.has('h')) {
+        console.log(`yarn run patch
+
+Flags
+  --help        you are here
+  --bump        bump patch version
+  --no-bump     don't bump patch version
+  --e2e         run e2e tests
+  --no-e2e      skip e2e tests
+  --clear       only clear pins and exit
+`)
+        process.exit(0);
+    }
+
+    if (flagMap.has('e2e')) {
+        e2e = flagMap.get('e2e')!;
+    }
+    
+    if (flagMap.has('clear')) {
+        clear = flagMap.get('clear')!;
+    }
+
+    if (flagMap.has('bump')) {
+        bump = flagMap.get('bump')!;
+    }
+}
+
+parseFlags();
+
 console.log("===== Clearing old pins =====");
 cleanResolutions();
 
 console.log("===== Running baseline yarn install =====");
 runCommand("yarn install");
+
+if (clear) {
+    process.exit(0);
+}
 
 console.log("===== Updating Trivy DB =====");
 runCommand(`${TRIVY_COMMAND} --download-db-only`);
@@ -228,4 +282,6 @@ runCommand("yarn install");
 console.log("===== Re-running scan to ensure fixes =====");
 runCommand(`${TRIVY_COMMAND} --skip-db-update --ignore-unfixed --scanners vuln .`);
 
-// bumpVersion();
+if (bump) {
+    bumpVersion();
+}

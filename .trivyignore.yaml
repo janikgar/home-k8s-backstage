@@ -1,0 +1,6 @@
+vulnerabilities:
+  - id: CVE-2026-41907
+    purls: 
+      - pkg:npm/uuid@3.4.0
+    statement: Can't update until all of Backstage moves from Material v3 to v4
+    expired_at: 2026-08-25

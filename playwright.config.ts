@@ -35,7 +35,7 @@ export default defineConfig({
           command: 'yarn start app',
           url: 'http://localhost:3000',
           reuseExistingServer: true,
-          timeout: 120_000,
+          timeout: 60_000,
         },      
       ],
 
