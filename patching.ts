@@ -310,7 +310,6 @@ Flags
   --e2e         run e2e tests
   --no-e2e      skip e2e tests
   --clear       only clear pins and exit
-  --bump        bump version and push to branch
 `)
         process.exit(0)
     }
