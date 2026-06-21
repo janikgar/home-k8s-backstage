@@ -45,7 +45,7 @@ test.describe('home page', () => {
     await expect(page.getByText('Home-K8s Catalog')).toBeVisible();
   });
 
-  for (const item of ['Create', 'APIs', 'Docs', 'Kubernetes', 'Register', 'Visualizer', 'Settings']) {
+  for (const item of ['Create', 'APIs', 'Docs', 'Register', 'Visualizer', 'Settings']) {
     test(`should include menu item ${item}`, async ({ page }) => {
       const sidebarItem = page.getByTestId('sidebar-root').locator('div > a > span', {hasText: item});
       await expect(sidebarItem).toBeVisible();

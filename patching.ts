@@ -3,7 +3,7 @@ import * as fs from "node:fs"
 import * as semver from "semver"
 
 const DOCKER_BINARY = process.env.DOCKER_BINARY || "podman"
-const TRIVY_COMMAND = `${DOCKER_BINARY} run -v trivy:/cache -v $PWD:/repo aquasec/trivy:0.70.0 repository --cache-dir /cache`
+const TRIVY_COMMAND = `${DOCKER_BINARY} run -v trivy:/cache -v $PWD:/repo aquasec/trivy:0.71.2 repository --cache-dir /cache`
 const PKG_PATTERN = new RegExp(/(?<pkgName>(?:@|).*?)@.*/g)
 
 const readJSON = (path: string): object => {
@@ -310,7 +310,6 @@ Flags
   --e2e         run e2e tests
   --no-e2e      skip e2e tests
   --clear       only clear pins and exit
-  --bump        bump version and push to branch
 `)
         process.exit(0)
     }
