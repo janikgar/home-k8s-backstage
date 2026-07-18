@@ -97,6 +97,9 @@ backend.add(import('@backstage/plugin-catalog-backend-module-github'));
 // kubernetes plugin
 backend.add(import('@backstage/plugin-kubernetes-backend'));
 
+// user settings plugin
+backend.add(import('@backstage/plugin-user-settings-backend'));
+
 // notifications and signals plugins
 backend.add(import('@backstage/plugin-notifications-backend'));
 backend.add(import('@backstage/plugin-signals-backend'));
