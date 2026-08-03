@@ -27,7 +27,7 @@ plantuml-markdown==3.11.2
 platformdirs==4.9.6
 properdocs==1.6.7
 Pygments==2.20.0
-pymdown-extensions==10.21.3
+pymdown-extensions==11.0
 python-dateutil==2.9.0.post0
 python-slugify==8.0.4
 PyYAML==6.0.3
