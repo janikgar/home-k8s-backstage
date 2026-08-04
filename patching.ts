@@ -3,7 +3,7 @@ import * as fs from "node:fs"
 import * as semver from "semver"
 
 const DOCKER_BINARY = process.env.DOCKER_BINARY || "podman"
-const TRIVY_COMMAND = `${DOCKER_BINARY} run -v trivy:/cache -v $PWD:/repo aquasec/trivy:0.71.2 repository --cache-dir /cache`
+const TRIVY_COMMAND = `${DOCKER_BINARY} run -v trivy:/cache -v $PWD:/repo aquasec/trivy:0.73.0 repository --cache-dir /cache`
 const PKG_PATTERN = new RegExp(/(?<pkgName>(?:@|).*?)@.*/g)
 
 const readJSON = (path: string): object => {
@@ -262,7 +262,7 @@ function bumpVersion() {
 
         // Sanitize branch name from version
         const versionOutput = runCommand("jq -r .version package.json", "get version")
-        const sanitizedVersion = semver.parse(versionOutput)?.version?.replace(/\./g, '-') || versionOutput
+        const sanitizedVersion = semver.parse(versionOutput)?.version
         const sanitizedBranchName = `backstage-${sanitizedVersion}`
 
         if (currentBranch === "main") {
@@ -282,8 +282,8 @@ function bumpVersion() {
             return
         }
 
-        runCommand("git commit -m 'automated patches'", "git commit")
-        runCommand(`git push -u HEAD ${sanitizedBranchName}`, `git push -u HEAD ${sanitizedBranchName}`)
+        //runCommand("git commit -m 'automated patches'", "git commit")
+        //runCommand(`git push -u HEAD ${sanitizedBranchName}`, `git push -u HEAD ${sanitizedBranchName}`)
     } catch (err) {
         console.error(`Version bump failed: ${err}`)
     }

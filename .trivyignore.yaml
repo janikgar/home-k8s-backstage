@@ -4,3 +4,16 @@ vulnerabilities:
       - pkg:npm/uuid@3.4.0
     statement: Can't update until all of Backstage moves from Material v3 to v4
     expired_at: 2026-08-25
+  - id: CVE-2026-69207
+    purls:
+      - pkg:npm/hono@4.12.33
+    statement: Update after npm embargo
+    expired_at: 2026-08-07
+  - id: CVE-2026-53666
+    purls:
+      - pkg:npm/react-router@6.30.4
+    statement: Cannot transitively upgrade a major version yet
+  - id: CVE-2026-53669
+    purls:
+      - pkg:npm/react-router@6.30.4
+    statement: Cannot transitively upgrade a major version yet
