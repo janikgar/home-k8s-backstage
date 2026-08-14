@@ -281,9 +281,6 @@ function bumpVersion() {
             console.log("Skipping commit (bump flag not set)")
             return
         }
-
-        //runCommand("git commit -m 'automated patches'", "git commit")
-        //runCommand(`git push -u HEAD ${sanitizedBranchName}`, `git push -u HEAD ${sanitizedBranchName}`)
     } catch (err) {
         console.error(`Version bump failed: ${err}`)
     }
