@@ -1,6 +1,7 @@
 import { createApp } from '@backstage/frontend-defaults';
 import catalogPlugin from '@backstage/plugin-catalog/alpha';
 import { navModule } from './modules/nav';
+import { homeModule } from './modules/home';
 import { SignInPageBlueprint } from '@backstage/plugin-app-react';
 import { SignInPage } from '@backstage/core-components';
 import { OAuth2 } from '@backstage/core-app-api';
@@ -81,6 +82,7 @@ export default createApp({
   features: [
     catalogPlugin,
     navModule,
+    homeModule,
     createFrontendModule({
       pluginId: 'app',
       extensions: [vaultAuthApi, signInPage],
