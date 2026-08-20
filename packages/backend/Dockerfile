@@ -1,5 +1,5 @@
 # Stage 1 - Create yarn install skeleton layer
-FROM node:22-bookworm-slim AS packages
+FROM node:24-trixie-slim AS packages
 
 WORKDIR /app
 COPY backstage.json package.json yarn.lock ./
@@ -14,17 +14,7 @@ COPY packages packages
 RUN find packages \! -name "package.json" -mindepth 2 -maxdepth 2 -exec rm -rf {} \+
 
 # Stage 2 - Install dependencies and build packages
-FROM node:22-bookworm-slim AS build
-
-# Set Python interpreter for `node-gyp` to use
-ENV PYTHON=/usr/bin/python3
-
-# Install isolate-vm dependencies, these are needed by the @backstage/plugin-scaffolder-backend.
-RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
-    --mount=type=cache,target=/var/lib/apt,sharing=locked \
-    apt-get update && \
-    apt-get install -y --no-install-recommends python3 g++ build-essential && \
-    rm -rf /var/lib/apt/lists/*
+FROM node:24-trixie-slim as build
 
 USER node
 WORKDIR /app
@@ -47,17 +37,7 @@ RUN mkdir packages/backend/dist/skeleton packages/backend/dist/bundle \
     && tar xzf packages/backend/dist/bundle.tar.gz -C packages/backend/dist/bundle
 
 # Stage 3 - Build the actual backend image and install production dependencies
-FROM node:22-bookworm-slim
-
-# Set Python interpreter for `node-gyp` to use
-ENV PYTHON=/usr/bin/python3
-
-# Install isolate-vm dependencies, these are needed by the @backstage/plugin-scaffolder-backend.
-RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
-    --mount=type=cache,target=/var/lib/apt,sharing=locked \
-    apt-get update && \
-    apt-get install -y --no-install-recommends python3 g++ build-essential && \
-    rm -rf /var/lib/apt/lists/*
+FROM node:24-trixie-slim
 
 # Install sqlite3 dependencies. You can skip this if you don't use sqlite3 in the image,
 # in which case you should also move better-sqlite3 to "devDependencies" in package.json.
@@ -98,8 +78,5 @@ COPY --chown=node:node app-config*.yaml ./
 
 # This switches many Node.js dependencies to production mode.
 ENV NODE_ENV=production
-
-# This disables node snapshot for Node 20 to work with the Scaffolder
-ENV NODE_OPTIONS="--no-node-snapshot"
 
 CMD ["node", "packages/backend", "--config", "app-config.yaml"]

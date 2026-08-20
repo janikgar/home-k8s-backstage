@@ -3,7 +3,7 @@ import * as fs from "node:fs"
 import * as semver from "semver"
 
 const DOCKER_BINARY = process.env.DOCKER_BINARY || "podman"
-const TRIVY_COMMAND = `${DOCKER_BINARY} run -v trivy:/cache -v $PWD:/repo aquasec/trivy:0.73.0 repository --cache-dir /cache`
+const TRIVY_COMMAND = `${DOCKER_BINARY} run -v trivy:/cache -v $PWD:/repo aquasec/trivy:0.74.0 repository --cache-dir /cache`
 const PKG_PATTERN = new RegExp(/(?<pkgName>(?:@|).*?)@.*/g)
 
 const readJSON = (path: string): object => {
