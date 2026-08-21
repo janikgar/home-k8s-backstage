@@ -14,7 +14,7 @@ COPY packages packages
 RUN find packages \! -name "package.json" -mindepth 2 -maxdepth 2 -exec rm -rf {} \+
 
 # Stage 2 - Install dependencies and build packages
-FROM node:24-trixie-slim as build
+FROM node:24-trixie-slim AS build
 
 USER node
 WORKDIR /app
