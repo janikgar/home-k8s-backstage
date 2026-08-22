@@ -62,9 +62,11 @@ jobs:
       uses: reproducible-containers/buildkit-cache-dance@v3
       with:
         cache-map: |
-          {"var-cache-apt": "/var/cache/apt"}
-          {"var-lib-apt": "/var/lib/apt"}
-          {"yarn-cache": "/home/node/.cache/yarn"}
+          {
+            "var-cache-apt": "/var/cache/apt",
+            "var-lib-apt": "/var/lib/apt",
+            "yarn-cache": "/home/node/.cache/yarn"
+          }
     - name: Build
       uses: docker/build-push-action@v7
       with:
