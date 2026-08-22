@@ -3,7 +3,8 @@ import * as fs from "node:fs"
 import * as semver from "semver"
 
 const DOCKER_BINARY = process.env.DOCKER_BINARY || "podman"
-const TRIVY_COMMAND = `${DOCKER_BINARY} run -v trivy:/cache -v $PWD:/repo aquasec/trivy:0.74.0 repository --cache-dir /cache`
+const TRIVY_VERSION = "0.74.0"
+const TRIVY_COMMAND = `${DOCKER_BINARY} run -v trivy:/cache -v $PWD:/repo aquasec/trivy:${TRIVY_VERSION} repository --cache-dir /cache`
 const PKG_PATTERN = new RegExp(/(?<pkgName>(?:@|).*?)@.*/g)
 
 const readJSON = (path: string): object => {
@@ -21,6 +22,7 @@ const writeJSON = ((content: any) => {
 let e2e = false
 let bump = false
 let clear = false
+let scan = false
 
 class Package {
     packageName: string
@@ -307,6 +309,7 @@ Flags
   --e2e         run e2e tests
   --no-e2e      skip e2e tests
   --clear       only clear pins and exit
+  --scan        scan for vulns and exit
 `)
         process.exit(0)
     }
@@ -322,9 +325,24 @@ Flags
     if (flagMap.has('bump')) {
         bump = flagMap.get('bump')!
     }
+
+    if (flagMap.has('scan')) {
+        scan = flagMap.get('scan')!
+    }
 }
 
 parseFlags()
+
+if (scan) {
+    console.log("===== Scanning with Trivy ======")
+    try {
+        runCommand(`${TRIVY_COMMAND} --ignore-unfixed --scanners vuln --ignorefile /repo/.trivyignore.yaml .`, "scan with Trivy")
+    } catch (err) {
+        console.error("Trivy scan failed: ", err)
+        process.exit(1)
+    }
+    process.exit(0)
+}
 
 console.log("\n===== Clearing old pins ======")
 cleanResolutions()
@@ -370,7 +388,7 @@ runCommand("yarn install", "install yarn packages")
 
 console.log("\n===== Re-running scan to ensure fixes ======")
 try {
-    runCommand(`${TRIVY_COMMAND} --skip-db-update --ignore-unfixed --scanners vuln .`, "re-scan")
+    runCommand(`${TRIVY_COMMAND} --skip-db-update --ignore-unfixed --scanners vuln --ignorefile /repo/.trivyignore.yaml .`, "re-scan")
 } catch (err) {
     console.warn("Re-scan failed: ", err)
 }
