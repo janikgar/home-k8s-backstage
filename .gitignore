@@ -73,3 +73,5 @@ ca.crt
 venv/
 
 vulns.json
+packages/backend/build_tmp/**
+!packages/backend/build_tmp/.gitkeep

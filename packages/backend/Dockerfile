@@ -16,13 +16,18 @@ RUN find packages \! -name "package.json" -mindepth 2 -maxdepth 2 -exec rm -rf {
 # Stage 2 - Install dependencies and build packages
 FROM node:24-trixie-slim AS build
 
+# Install sqlite3 dependencies. You can skip this if you don't use sqlite3 in the image,
+# in which case you should also move better-sqlite3 to "devDependencies" in package.json.
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt,sharing=locked \
+    apt-get update && \
+    apt-get install -y --no-install-recommends libsqlite3-dev && \
+    rm -rf /var/lib/apt/lists/*
+
 USER node
 WORKDIR /app
 
 COPY --from=packages --chown=node:node /app .
-COPY --from=packages --chown=node:node /app/.yarn ./.yarn
-COPY --from=packages --chown=node:node /app/.yarnrc.yml  ./
-COPY --from=packages --chown=node:node /app/backstage.json ./
 
 RUN --mount=type=cache,target=/home/node/.cache/yarn,sharing=locked,uid=1000,gid=1000 \
     yarn install --immutable
