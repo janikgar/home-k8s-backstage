@@ -27,8 +27,15 @@ test.describe('signin page', () => {
   test('should include Vault', async ({ page }) => {
     await page.goto('/');
 
-    const signInButton = page.getByRole('button', { name: 'Sign In' });
-    await expect(signInButton).toBeVisible();
+    const vaultText = page.getByText('Vault', {exact: true});
+    await expect(vaultText).toBeVisible();
+  });
+
+  test('should include Synology', async ({ page }) => {
+    await page.goto('/');
+
+    const vaultText = page.getByText('Synology', {exact: true});
+    await expect(vaultText).toBeVisible();
   });
 });
 
@@ -65,11 +72,13 @@ test.describe('doc page', () => {
     const docButton = page.getByText('Docs');
     await expect(docButton).toBeVisible();
     await docButton.click();
+    
+    await expect(page.getByText("Backstage is a developer platform that features", {exact: false})).toBeVisible();
   });
 
   test('should have more than one document', async({ page }) => {
-    const owned = page.getByText('Owned', {exact: false});
-    await expect(owned).not.toContainText('Owned (0)');
+    const all = page.getByRole('heading', { name: /All/ })
+    await expect(all).not.toContainText('All (0)');
   });
   
   test('should have a working document', async({ page }) => {

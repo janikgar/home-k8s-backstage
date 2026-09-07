@@ -1,4 +1,5 @@
 import { render, waitFor } from '@testing-library/react';
+import 'jest';
 import App from './App';
 
 describe('App', () => {
@@ -16,7 +17,7 @@ describe('App', () => {
           },
           context: 'test',
         },
-      ] as any,
+      ].toString()
     };
 
     const rendered = render(App.createRoot());

@@ -1,0 +1,15 @@
+{
+    "configurations": [
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Run playwright",
+            "runtimeExecutable": "playwright",
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "test"
+            ],
+            "profileStartup": true
+        }
+    ]
+}

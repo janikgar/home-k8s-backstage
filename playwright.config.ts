@@ -28,20 +28,17 @@ export default defineConfig({
   },
 
   // Run your local dev server before starting the tests
-  webServer: process.env.CI
-    ? []
-    : [
-        {
-          command: 'yarn start app',
-          url: 'http://localhost:3000',
-          reuseExistingServer: true,
-          timeout: 60_000,
-        },      
-      ],
+  webServer: {
+    command: 'yarn run start',
+    url: 'http://localhost:3000',
+    reuseExistingServer: !process.env.CI,
+    timeout: 1_000,
+    stdout: 'pipe',
+  },
 
   forbidOnly: !!process.env.CI,
 
-  retries: process.env.CI ? 2 : 0,
+  retries: 0,
 
   reporter: [
     ['line'],
@@ -49,11 +46,11 @@ export default defineConfig({
   ],
 
   use: {
-    actionTimeout: 0,
+    // actionTimeout: 5_000,
     baseURL:
       process.env.PLAYWRIGHT_URL ??
       (process.env.CI ? 'http://localhost:7007' : 'http://localhost:3000'),
-    screenshot: 'only-on-failure',
+    screenshot: 'on',
     trace: 'on-first-retry',
   },
 
