@@ -1,0 +1,1 @@
+export { authModuleSynoProvider } from './syno'

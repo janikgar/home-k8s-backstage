@@ -24,18 +24,11 @@ test.describe('signin page', () => {
     await expect(enterButton).toBeVisible();
   });
 
-  test('should include Vault', async ({ page }) => {
-    await page.goto('/');
-
-    const vaultText = page.getByText('Vault', {exact: true});
-    await expect(vaultText).toBeVisible();
-  });
-
   test('should include Synology', async ({ page }) => {
     await page.goto('/');
 
-    const vaultText = page.getByText('Synology', {exact: true});
-    await expect(vaultText).toBeVisible();
+    const synoText = page.getByText('Synology', {exact: true});
+    await expect(synoText).toBeVisible();
   });
 });
 

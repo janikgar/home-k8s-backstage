@@ -33,7 +33,7 @@
     "cli": {
       "new": {
         "globals": {
-          "license": "UNLICENSED"
+          "license": "MIT"
         }
       }
     }

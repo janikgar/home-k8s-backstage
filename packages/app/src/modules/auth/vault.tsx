@@ -38,11 +38,12 @@ export const vaultAuthApi = ApiBlueprint.make({
           environment: configApi.getOptionalString('auth.environment'),
           provider: {
             id: 'vault-provider',
-            title: 'Vault',
+            title: 'vault',
             icon: () => null,
           },
           popupOptions: {
             size: {
+            //   fullscreen: true,
               width: 800,
               height: 600,
             },

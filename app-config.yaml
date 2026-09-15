@@ -1,6 +1,6 @@
 app:
   title: Home Kubernetes
-  baseUrl: http://localhost:3000
+  baseUrl: http://127.0.0.1:3000
   packages: all
  
   extensions:
@@ -110,7 +110,7 @@ backend:
   # auth:
   #   keys:
   #     - secret: ${BACKEND_SECRET}
-  baseUrl: http://localhost:7007
+  baseUrl: http://127.0.0.1:7007
   listen:
     port: 7007
     # Uncomment the following host directive to bind to specific interfaces
@@ -120,7 +120,7 @@ backend:
     # Content-Security-Policy directives follow the Helmet format: https://helmetjs.github.io/#reference
     # Default Helmet Content-Security-Policy values can be removed by setting the key to false
   cors:
-    origin: http://localhost:3000
+    origin: http://127.0.0.1:3000
     methods: [GET, HEAD, PATCH, POST, PUT, DELETE]
     credentials: true
   # This is for local development only, it is not recommended to use this in production
@@ -184,13 +184,18 @@ auth:
     guest: {}
     vault-provider:
       development:
-        metadataUrl: https://vault.home.lan/v1/identity/oidc/provider/default/.well-known/openid-configuration
+        metadataUrl: https://vault.tailc6343.ts.net/v1/identity/oidc/provider/default/.well-known/openid-configuration
         clientId: ${VAULT_CLIENT_ID}
         clientSecret: ${VAULT_CLIENT_SECRET}
         prompt: auto
-        signIn:
-          resolvers:
-            - resolver: mySignInResolver
+    syno-provider:
+      development:
+        metadataUrl: https://j-squared.synology.me:5081/webman/sso/.well-known/openid-configuration
+        clientId: ${SYNO_CLIENT_ID}
+        clientSecret: ${SYNO_CLIENT_SECRET}
+        prompt: auto
+        sessionDuration:
+          hours: 24
   # see https://backstage.io/docs/ai/mcp-actions#client-id-metadata-documents
   # to learn more about client id metadata documents
   clientIdMetadataDocuments:
@@ -201,7 +206,7 @@ auth:
     #   - 'https://*.trusted-domain.com/*'
     # Optional: restrict which redirect URIs are allowed (defaults to ['*'])
     # allowedRedirectUriPatterns:
-    #   - 'http://localhost:*'
+    #   - 'http://127.0.0.1:*'
     #   - 'https://*.example.com/*'
 
 scaffolder:

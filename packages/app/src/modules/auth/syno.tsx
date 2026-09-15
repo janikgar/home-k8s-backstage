@@ -43,11 +43,12 @@ export const synoAuthApi = ApiBlueprint.make({
           },
           popupOptions: {
             size: {
+              // fullscreen: true,
               width: 800,
               height: 600,
             },
           },
-          defaultScopes: ['openid', 'profile', 'email'],
+          defaultScopes: ['openid', 'groups', 'email'],
         })
     })
 });

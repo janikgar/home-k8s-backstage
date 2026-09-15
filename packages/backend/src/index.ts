@@ -1,9 +1,5 @@
 import { createBackend } from '@backstage/backend-defaults';
-import { coreServices, createBackendModule } from '@backstage/backend-plugin-api';
-import { authProvidersExtensionPoint, createOAuthProviderFactory, commonSignInResolvers } from '@backstage/plugin-auth-node';
-import { oidcAuthenticator } from '@backstage/plugin-auth-backend-module-oidc-provider';
-import { createSignInResolverFactory } from '@backstage/plugin-auth-node';
-import { stringifyEntityRef, DEFAULT_NAMESPACE } from '@backstage/catalog-model';
+import { authModuleSynoProvider } from './modules/auth/syno';
 
 const backend = createBackend();
 
@@ -25,67 +21,7 @@ backend.add(import('@backstage/plugin-auth-backend'));
 backend.add(import('@backstage/plugin-auth-backend-module-guest-provider'));
 // See https://github.com/backstage/backstage/blob/master/docs/auth/guest/provider.md
 
-export const mySignInResolver =
-  createSignInResolverFactory({
-    create() {
-      return async (info, ctx) => {
-        const { profile } = info;
-
-        if (!profile.displayName) {
-          throw new Error('no display name')
-        }
-
-        const userEntity = stringifyEntityRef({
-          kind: 'User',
-          name: profile.displayName,
-          namespace: DEFAULT_NAMESPACE,
-        });
-
-        const groupEntity = stringifyEntityRef({
-          kind: 'Group',
-          name: 'k8s-admin',
-          namespace: DEFAULT_NAMESPACE,
-        });
-
-        return ctx.issueToken({
-          claims: {
-            sub: userEntity,
-            ent: [
-              userEntity,
-              groupEntity,
-            ],
-          }
-        })
-      }
-    }
-  });
-
-export const authModuleVaultProvider = createBackendModule({
-  pluginId: 'auth',
-  moduleId: 'vault-provider',
-  register(reg) {
-    reg.registerInit({
-      deps: {
-        providers: authProvidersExtensionPoint,
-        logger: coreServices.logger,
-      },
-      async init({ providers }) {
-        providers.registerProvider({
-          providerId: 'vault-provider',
-          factory: createOAuthProviderFactory({
-            authenticator: oidcAuthenticator,
-            signInResolverFactories: {
-              ...commonSignInResolvers,
-              mySignInResolver,
-            }
-          }),
-        });
-      },
-    });
-  },
-});
-
-backend.add(authModuleVaultProvider);
+backend.add(authModuleSynoProvider);
 
 // catalog plugin
 backend.add(import('@backstage/plugin-catalog-backend'));

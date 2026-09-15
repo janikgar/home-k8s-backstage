@@ -30,7 +30,7 @@ export default defineConfig({
   // Run your local dev server before starting the tests
   webServer: {
     command: 'yarn run start',
-    url: 'http://localhost:3000',
+    url: 'http://127.0.0.1:3000',
     reuseExistingServer: !process.env.CI,
     timeout: 1_000,
     stdout: 'pipe',
@@ -49,7 +49,7 @@ export default defineConfig({
     // actionTimeout: 5_000,
     baseURL:
       process.env.PLAYWRIGHT_URL ??
-      (process.env.CI ? 'http://localhost:7007' : 'http://localhost:3000'),
+      (process.env.CI ? 'http://127.0.0.1:7007' : 'http://127.0.0.1:3000'),
     screenshot: 'on',
     trace: 'on-first-retry',
   },
