@@ -5,9 +5,7 @@ import { stringifyEntityRef, DEFAULT_NAMESPACE } from '@backstage/catalog-model'
 
 const synoSignInResolver = async (info, ctx) => {
   let userName = info.result?.fullProfile?.userinfo?.username;
-
-  console.log(info)
-
+  
   if (userName === "") {
     throw new Error("username is blank");
   }
