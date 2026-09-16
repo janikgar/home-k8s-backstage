@@ -1,0 +1,6 @@
+{
+    "testPathIgnorePatterns": [
+        "/node_modules/",
+        "<rootDir>/packages/app/e2e-tests"
+    ]
+}

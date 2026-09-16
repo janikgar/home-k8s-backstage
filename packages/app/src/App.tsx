@@ -4,78 +4,42 @@ import { navModule } from './modules/nav';
 import { homeModule } from './modules/home';
 import { SignInPageBlueprint } from '@backstage/plugin-app-react';
 import { SignInPage } from '@backstage/core-components';
-import { OAuth2 } from '@backstage/core-app-api';
-import {
-  BackstageIdentityApi,
-  OpenIdConnectApi,
-  ProfileInfoApi,
-  SessionApi,
-} from '@backstage/core-plugin-api';
-import { 
-  ApiBlueprint,
-  configApiRef,
-  createFrontendModule,
-  discoveryApiRef,
-  oauthRequestApiRef,
-  createApiRef,
-} from '@backstage/frontend-plugin-api';
-
-const vaultAuthApiRef = createApiRef<
-  OpenIdConnectApi & ProfileInfoApi & BackstageIdentityApi & SessionApi
->().with({
-  id: 'auth.vault-provider'
-})
-
-const vaultAuthApi = ApiBlueprint.make({
-  name: 'vault',
-  params: defineParams => 
-    defineParams({
-      api: vaultAuthApiRef,
-      deps: {
-        discoveryApi: discoveryApiRef,
-        oauthRequestApi: oauthRequestApiRef,
-        configApi: configApiRef,
-      },
-      factory: ({ discoveryApi, oauthRequestApi, configApi }) => 
-        OAuth2.create({
-          configApi,
-          discoveryApi,
-          oauthRequestApi,
-          environment: configApi.getOptionalString('auth.environment'),
-          provider: {
-            id: 'vault-provider',
-            title: 'Vault',
-            icon: () => null,
-          },
-          popupOptions: {
-            size: {
-              width: 800,
-              height: 600,
-            },
-          },
-          defaultScopes: ['openid', 'profile', 'email'],
-        })
-    })
-});
+import { useApi, configApiRef, createFrontendModule } from '@backstage/frontend-plugin-api';
+import { synoAuthApi, synoAuthApiRef } from './modules/auth';
 
 const signInPage = SignInPageBlueprint.make({
   params: {
-    loader: async() => props =>
-    (
-      <SignInPage
-        {...props}
-        providers={[
-          'guest',
-          {
-            id: 'vault-provider',
-            title: 'Vault',
-            message: 'Sign in using Vault',
-            apiRef: vaultAuthApiRef,
-          }
-        ]}
-      />
-    ),
-  }
+    loader: async () => props => {
+      const configApi = useApi(configApiRef);
+      if (configApi.getString('auth.environment') === 'development') {
+        return (
+          <SignInPage
+            {...props}
+            providers={[
+              'guest',
+              {
+                id: 'syno-provider',
+                title: 'Synology',
+                message: 'Sign in using Synology',
+                apiRef: synoAuthApiRef,
+              }
+            ]}
+          />
+        );
+      }
+      return (
+        <SignInPage
+          {...props}
+          provider={{
+              id: 'syno-provider',
+              title: 'Synology',
+              message: 'Sign in using Synology',
+              apiRef: synoAuthApiRef,
+          }}
+        />
+      );
+    },
+  },
 });
 
 export default createApp({
@@ -85,7 +49,7 @@ export default createApp({
     homeModule,
     createFrontendModule({
       pluginId: 'app',
-      extensions: [vaultAuthApi, signInPage],
+      extensions: [synoAuthApi, signInPage],
     }),
   ],
 });

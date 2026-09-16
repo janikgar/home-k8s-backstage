@@ -1,4 +1,5 @@
 import { render, waitFor } from '@testing-library/react';
+import 'jest';
 import App from './App';
 
 describe('App', () => {
@@ -9,14 +10,14 @@ describe('App', () => {
         {
           data: {
             app: { title: 'Test' },
-            backend: { baseUrl: 'http://localhost:7007' },
+            backend: { baseUrl: 'http://127.0.0.1:7007' },
             techdocs: {
-              storageUrl: 'http://localhost:7007/api/techdocs/static/docs',
+              storageUrl: 'http://127.0.0.1:7007/api/techdocs/static/docs',
             },
           },
           context: 'test',
         },
-      ] as any,
+      ].toString()
     };
 
     const rendered = render(App.createRoot());

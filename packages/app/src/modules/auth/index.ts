@@ -1,0 +1,1 @@
+export { synoAuthApi, synoAuthApiRef } from './syno';
