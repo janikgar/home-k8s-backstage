@@ -45,9 +45,9 @@ test.describe('home page', () => {
     await expect(page.getByText('Home-K8s Catalog')).toBeVisible();
   });
 
-  for (const item of ['Create', 'APIs', 'Docs', 'Register', 'Visualizer', 'Settings']) {
+  for (const item of ['Create', 'APIs', 'Docs', 'Register', 'Visualizer', 'Settings', 'Sign Out']) {
     test(`should include menu item ${item}`, async ({ page }) => {
-      const sidebarItem = page.getByTestId('sidebar-root').locator('div > a > span', {hasText: item});
+      const sidebarItem = page.getByTestId('sidebar-root').getByText(item);
       await expect(sidebarItem).toBeVisible();
     });
   };
@@ -103,4 +103,24 @@ test.describe('create page', () => {
     await expect(templateCard).toBeVisible();
   })
 });
+
+test.describe('sign out page', () => {
+  test('should sign out', async({ page }) => {
+    await page.goto('/');
+
+    const enterButton = page.getByRole('button', { name: 'Enter' });
+    await expect(enterButton).toBeVisible();
+    await enterButton.click();
+
+    const signoutButton = page.getByRole('button', { name: 'Sign Out'});
+    await expect(signoutButton).toBeVisible();
+    await signoutButton.click();
+
+    const enterButtonAgain = page.getByRole('button', { name: 'Enter' });
+    await expect(enterButtonAgain).toBeVisible();
+
+    const synoText = page.getByText('Synology', {exact: true});
+    await expect(synoText).toBeVisible();
+  })
+})
 
