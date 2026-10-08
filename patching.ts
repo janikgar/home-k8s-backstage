@@ -3,7 +3,7 @@ import * as fs from "node:fs"
 import * as semver from "semver"
 
 const DOCKER_BINARY = process.env.DOCKER_BINARY || "podman"
-const TRIVY_VERSION = "0.74.0"
+const TRIVY_VERSION = "0.75.0"
 const TRIVY_COMMAND = `${DOCKER_BINARY} run -v trivy:/cache -v $PWD:/repo aquasec/trivy:${TRIVY_VERSION} repository --cache-dir /cache`
 const PKG_PATTERN = new RegExp(/(?<pkgName>(?:@|).*?)@.*/g)
 
