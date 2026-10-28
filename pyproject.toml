@@ -1,0 +1,9 @@
+[project]
+name = "home-k8s-backstage"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "mkdocs-techdocs-core>=1.7.1",
+]
