@@ -3,7 +3,7 @@ vulnerabilities:
     purls: 
       - pkg:npm/uuid@3.4.0
     statement: Can't update until all of Backstage moves from Material v3 to v4
-    expired_at: 2026-10-25
+    expired_at: 2026-11-04
   - id: CVE-2026-53666
     purls:
       - pkg:npm/react-router@6.30.6
