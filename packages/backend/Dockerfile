@@ -1,5 +1,5 @@
 # Stage 1 - Create yarn install skeleton layer
-FROM dhi.io/node:24-debian-dev@sha256:0fbf99f9c6874344b8c9a2bc80ea63c9f0058f01814f1ea23bf7ddad1b130a95 AS packages
+FROM dhi.io/node:24-debian-dev@sha256:42930a1523f7213e7d7bcf033e2c5e26f08db09b42f77a8de68e6a26f741e264 AS packages
 
 WORKDIR /app
 COPY backstage.json package.json yarn.lock ./
@@ -14,7 +14,7 @@ COPY packages packages
 RUN find packages \! -name "package.json" -mindepth 2 -maxdepth 2 -exec rm -rf {} \+
 
 # Stage 2 - Install dependencies and build packages
-FROM dhi.io/node:24-debian-dev@sha256:0fbf99f9c6874344b8c9a2bc80ea63c9f0058f01814f1ea23bf7ddad1b130a95 AS build
+FROM dhi.io/node:24-debian-dev@sha256:42930a1523f7213e7d7bcf033e2c5e26f08db09b42f77a8de68e6a26f741e264 AS build
 
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
@@ -25,7 +25,7 @@ ENV PYTHON=/usr/bin/python3
 
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
-    apt-get update -y && \
+    apt-get update && \
     apt-get install -y --no-install-recommends python3 g++ build-essential gzip && \
     rm -rf /var/lib/apt/lists/*
 
@@ -57,15 +57,7 @@ RUN mkdir packages/backend/dist/skeleton packages/backend/dist/bundle \
 
 # Stage 3 - Build the actual backend image and install production dependencies
 #FROM dhi.io/node:24@sha256:5eb921faefd07559999aad0571d9c26eccfc1c7aef8d386dc66481ed8f989cac
-FROM dhi.io/node:24-debian-dev@sha256:0fbf99f9c6874344b8c9a2bc80ea63c9f0058f01814f1ea23bf7ddad1b130a95
-
-# Install sqlite3 dependencies. You can skip this if you don't use sqlite3 in the image,
-# in which case you should also move better-sqlite3 to "devDependencies" in package.json.
-#RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
-#    --mount=type=cache,target=/var/lib/apt,sharing=locked \
-#    apt-get update && \
-#    apt-get install -y --no-install-recommends libsqlite3-dev && \
-#    rm -rf /var/lib/apt/lists/*
+FROM dhi.io/node:24-debian-dev@sha256:42930a1523f7213e7d7bcf033e2c5e26f08db09b42f77a8de68e6a26f741e264
 
 # From here on we use the least-privileged `node` user to run the backend.
 USER node
