@@ -1,5 +1,5 @@
-# Stage 1 - Create yarn install skeleton layer
-FROM dhi.io/node:24-debian-dev@sha256:42930a1523f7213e7d7bcf033e2c5e26f08db09b42f77a8de68e6a26f741e264 AS packages
+: Stage 1 - Create yarn install skeleton layer
+FROM dhi.io/node:24-debian-dev@sha256:aee95f16dcc8154cf8c1269aeb793b70b147a70178dd5c90c33dd8e5ae5c2fac AS packages
 
 WORKDIR /app
 COPY backstage.json package.json yarn.lock ./
@@ -14,7 +14,7 @@ COPY packages packages
 RUN find packages \! -name "package.json" -mindepth 2 -maxdepth 2 -exec rm -rf {} \+
 
 # Stage 2 - Install dependencies and build packages
-FROM dhi.io/node:24-debian-dev@sha256:42930a1523f7213e7d7bcf033e2c5e26f08db09b42f77a8de68e6a26f741e264 AS build
+FROM dhi.io/node:24-debian-dev@sha256:aee95f16dcc8154cf8c1269aeb793b70b147a70178dd5c90c33dd8e5ae5c2fac AS build
 
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
@@ -57,7 +57,7 @@ RUN mkdir packages/backend/dist/skeleton packages/backend/dist/bundle \
 
 # Stage 3 - Build the actual backend image and install production dependencies
 #FROM dhi.io/node:24@sha256:5eb921faefd07559999aad0571d9c26eccfc1c7aef8d386dc66481ed8f989cac
-FROM dhi.io/node:24-debian-dev@sha256:42930a1523f7213e7d7bcf033e2c5e26f08db09b42f77a8de68e6a26f741e264
+FROM dhi.io/node:24-debian-dev@sha256:aee95f16dcc8154cf8c1269aeb793b70b147a70178dd5c90c33dd8e5ae5c2fac
 
 # From here on we use the least-privileged `node` user to run the backend.
 USER node
