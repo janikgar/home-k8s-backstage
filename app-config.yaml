@@ -182,15 +182,9 @@ auth:
     secret: ${SESSION_SECRET}
   providers:
     guest: {}
-    vault-provider:
-      development:
-        metadataUrl: https://vault.tailc6343.ts.net/v1/identity/oidc/provider/default/.well-known/openid-configuration
-        clientId: ${VAULT_CLIENT_ID}
-        clientSecret: ${VAULT_CLIENT_SECRET}
-        prompt: auto
     syno-provider:
       development:
-        metadataUrl: https://j-squared.synology.me:5081/webman/sso/.well-known/openid-configuration
+        metadataUrl: https://syno.tailc6343.ts.net/webman/sso/.well-known/openid-configuration
         clientId: ${SYNO_CLIENT_ID}
         clientSecret: ${SYNO_CLIENT_SECRET}
         prompt: auto
