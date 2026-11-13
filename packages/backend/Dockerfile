@@ -25,7 +25,7 @@ ENV PYTHON=/usr/bin/python3
 
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
-    apt-get update && \
+    apt-get update -y && \
     apt-get install -y --no-install-recommends python3 g++ build-essential gzip && \
     rm -rf /var/lib/apt/lists/*
 
