@@ -1,4 +1,4 @@
-: Stage 1 - Create yarn install skeleton layer
+# Stage 1 - Create yarn install skeleton layer
 FROM dhi.io/node:24-debian-dev@sha256:aee95f16dcc8154cf8c1269aeb793b70b147a70178dd5c90c33dd8e5ae5c2fac AS packages
 
 WORKDIR /app
